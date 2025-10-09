@@ -1,0 +1,305 @@
+import React, { useCallback, useState } from "react";
+import ReactFlow, {
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Handle,
+  Position,
+} from "reactflow";
+import "reactflow/dist/style.css";
+
+// Nodo UML
+function ClassNode({ data, selected }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({
+    label: data.label,
+    attributes: data.attributes || [],
+    methods: data.methods || [],
+  });
+
+  const handleDoubleClick = (e) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    if (data.onChange) {
+      // Filtrar líneas vacías al guardar
+      const cleanedData = {
+        label: editData.label,
+        attributes: editData.attributes.filter(a => a.trim()),
+        methods: editData.methods.filter(m => m.trim()),
+      };
+      data.onChange(cleanedData);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditData({
+      label: data.label,
+      attributes: data.attributes || [],
+      methods: data.methods || [],
+    });
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div
+        style={{
+          border: "2px solid #2196F3",
+          borderRadius: "4px",
+          backgroundColor: "white",
+          minWidth: "200px",
+          fontFamily: "Arial, sans-serif",
+          padding: "10px",
+        }}
+      >
+        <div style={{ marginBottom: "8px" }}>
+          <label style={{ fontSize: "12px", fontWeight: "bold" }}>Nombre:</label>
+          <input
+            type="text"
+            value={editData.label}
+            onChange={(e) => setEditData({ ...editData, label: e.target.value })}
+            style={{ width: "100%", padding: "4px", marginTop: "2px" }}
+            autoFocus
+          />
+        </div>
+        <div style={{ marginBottom: "8px" }}>
+          <label style={{ fontSize: "12px", fontWeight: "bold" }}>Atributos (uno por línea):</label>
+          <textarea
+            value={editData.attributes.join("\n")}
+            onChange={(e) => setEditData({ ...editData, attributes: e.target.value.split("\n") })}
+            onKeyDown={(e) => e.stopPropagation()}
+            style={{ width: "100%", padding: "4px", marginTop: "2px", minHeight: "60px", resize: "vertical" }}
+          />
+        </div>
+        <div style={{ marginBottom: "8px" }}>
+          <label style={{ fontSize: "12px", fontWeight: "bold" }}>Métodos (uno por línea):</label>
+          <textarea
+            value={editData.methods.join("\n")}
+            onChange={(e) => setEditData({ ...editData, methods: e.target.value.split("\n") })}
+            onKeyDown={(e) => e.stopPropagation()}
+            style={{ width: "100%", padding: "4px", marginTop: "2px", minHeight: "60px", resize: "vertical" }}
+          />
+        </div>
+        <div style={{ display: "flex", gap: "6px" }}>
+          <button
+            onClick={handleSave}
+            style={{
+              padding: "4px 8px",
+              backgroundColor: "#4CAF50",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "12px",
+            }}
+          >
+            Guardar
+          </button>
+          <button
+            onClick={handleCancel}
+            style={{
+              padding: "4px 8px",
+              backgroundColor: "#f44336",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "12px",
+            }}
+          >
+            Cancelar
+          </button>
+        </div>
+        <Handle type="source" position={Position.Right} />
+        <Handle type="target" position={Position.Left} />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      onDoubleClick={handleDoubleClick}
+      style={{
+        border: selected ? "2px solid #2196F3" : "2px solid #333",
+        borderRadius: "4px",
+        backgroundColor: "white",
+        minWidth: "160px",
+        fontFamily: "Arial, sans-serif",
+        cursor: "pointer",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "#f0f0f0",
+          padding: "6px",
+          textAlign: "center",
+          fontWeight: "bold",
+          borderBottom: "1px solid #333",
+        }}
+      >
+        {data.label}
+      </div>
+      <div style={{ padding: "6px", borderBottom: "1px solid #333" }}>
+        {data.attributes?.length > 0
+          ? data.attributes.map((attr, i) => (
+              <div key={i} style={{ fontSize: "14px" }}>
+                {attr}
+              </div>
+            ))
+          : (
+            <div style={{ fontSize: "12px", fontStyle: "italic", color: "#666" }}>
+              (sin atributos)
+            </div>
+          )}
+      </div>
+      <div style={{ padding: "6px" }}>
+        {data.methods?.length > 0
+          ? data.methods.map((m, i) => (
+              <div key={i} style={{ fontSize: "14px", fontStyle: "italic" }}>
+                {m}()
+              </div>
+            ))
+          : (
+            <div style={{ fontSize: "12px", fontStyle: "italic", color: "#666" }}>
+              (sin métodos)
+            </div>
+          )}
+      </div>
+      <Handle type="source" position={Position.Right} />
+      <Handle type="target" position={Position.Left} />
+    </div>
+  );
+}
+
+const nodeTypes = { classNode: ClassNode };
+
+export default function ClassDiagram() {
+  const initialNodes = [
+    {
+      id: "1",
+      type: "classNode",
+      position: { x: 100, y: 100 },
+      data: { label: "Usuario", attributes: ["+id: number", "+nombre: string"], methods: ["login", "logout"] },
+    },
+    {
+      id: "2",
+      type: "classNode",
+      position: { x: 400, y: 200 },
+      data: { label: "Producto", attributes: ["+id: number", "+precio: float"], methods: ["calcularIVA"] },
+    },
+  ];
+
+  const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(
+    initialNodes.map((node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        onChange: (newData) => {
+          setNodes((nds) =>
+            nds.map((n) =>
+              n.id === node.id
+                ? { ...n, data: { ...n.data, ...newData, onChange: n.data.onChange } }
+                : n
+            )
+          );
+        },
+      },
+    }))
+  );
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [idCounter, setIdCounter] = useState(3);
+
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
+
+  const addClassNode = () => {
+    const newId = `${idCounter}`;
+    const newNode = {
+      id: newId,
+      type: "classNode",
+      position: { x: Math.random() * 400 + 50, y: Math.random() * 300 + 50 },
+      data: {
+        label: `Clase${idCounter}`,
+        attributes: [],
+        methods: [],
+        onChange: (newData) => {
+          setNodes((nds) =>
+            nds.map((n) =>
+              n.id === newId
+                ? { ...n, data: { ...n.data, ...newData, onChange: n.data.onChange } }
+                : n
+            )
+          );
+        },
+      },
+    };
+    setNodes((nds) => [...nds, newNode]);
+    setIdCounter((prev) => prev + 1);
+  };
+
+  return (
+    <div style={{ width: "100%", height: "100vh", position: "relative" }}>
+      {/* Botón para añadir clases */}
+      <button
+        onClick={addClassNode}
+        style={{
+          position: "absolute",
+          zIndex: 10,
+          top: 10,
+          left: 10,
+          padding: "8px 12px",
+          backgroundColor: "#4CAF50",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        ➕ Añadir Clase
+      </button>
+
+      {/* Instrucciones */}
+      <div
+        style={{
+          position: "absolute",
+          zIndex: 10,
+          top: 10,
+          right: 10,
+          backgroundColor: "white",
+          border: "1px solid #333",
+          borderRadius: "6px",
+          padding: "8px",
+          fontSize: "12px",
+          boxShadow: "0px 0px 10px rgba(0,0,0,0.2)",
+        }}
+      >
+        💡 Haz <strong>doble clic</strong> en una clase para editarla
+      </div>
+
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodeTypes={nodeTypes}
+        fitView
+      >
+        <MiniMap />
+        <Controls />
+        <Background />
+      </ReactFlow>
+    </div>
+  );
+}
