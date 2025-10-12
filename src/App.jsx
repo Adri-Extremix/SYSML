@@ -1,5 +1,6 @@
 import React from "react";
 import ClassDiagram from "./ClassDiagram";
+import SideMenu from "./SideMenu";
 
 function App() {
   return (

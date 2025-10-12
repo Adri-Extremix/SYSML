@@ -10,6 +10,7 @@ import ReactFlow, {
   Position,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import SideMenu from "./SideMenu";
 
 // Nodo UML
 function ClassNode({ data, selected }) {
@@ -203,12 +204,17 @@ function ClassNode({ data, selected }) {
     );
   }
 
+  let borderRadiusValue = 0;
+  if (editData.type == "rounded") {
+    borderRadiusValue = 4;
+  }
+
   return (
     <div
       onDoubleClick={handleDoubleClick}
       style={{
         border: selected ? "2px solid #2196F3" : "2px solid #333",
-        borderRadius: "4px",
+        borderRadius: borderRadiusValue,
         backgroundColor: "white",
         minWidth: "160px",
         fontFamily: "Arial, sans-serif",
@@ -269,6 +275,7 @@ const initialNodes = [
       label: "Usuario",
       attributes: ["+id: number", "+nombre: string"],
       methods: ["login", "logout"],
+      type: "squared",
     },
   },
   {
@@ -279,6 +286,7 @@ const initialNodes = [
       label: "Producto",
       attributes: ["+id: number", "+precio: float"],
       methods: ["calcularIVA"],
+      type: "rounded",
     },
   },
 ];
@@ -311,7 +319,7 @@ export default function ClassDiagram() {
     [setEdges],
   );
 
-  const addClassNode = () => {
+  const addClassNode = (typeOfNode) => {
     const newId = `${idCounter}`;
     const newNode = {
       id: newId,
@@ -321,6 +329,7 @@ export default function ClassDiagram() {
         label: `Clase${idCounter}`,
         attributes: [],
         methods: [],
+        type: typeOfNode,
         onDelete: () => {
           setNodes((nds) => nds.filter((n) => n.id !== newId));
           setEdges((eds) =>
@@ -358,23 +367,6 @@ export default function ClassDiagram() {
     <div style={{ width: "100%", height: "100vh", position: "relative" }}>
       {/* Botón para añadir clases */}
       <button
-        onClick={addClassNode}
-        style={{
-          position: "absolute",
-          zIndex: 10,
-          top: 10,
-          left: 10,
-          padding: "8px 12px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        ➕ Añadir Clase
-      </button>
-      <button
         onClick={saveFigure}
         style={{
           position: "absolute",
@@ -391,6 +383,7 @@ export default function ClassDiagram() {
       >
         💾 Guardar Diagrama
       </button>
+      <SideMenu addNode={addClassNode} />
 
       {/* Instrucciones */}
       <div
