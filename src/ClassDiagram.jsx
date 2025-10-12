@@ -248,58 +248,97 @@ export default function ClassDiagram() {
     setIdCounter((prev) => prev + 1);
   };
 
+  const saveFigure = () => {
+    const figure = {
+      nodes: nodes.map(({ id, data, position }) => ({
+        id,
+        label: data.label,
+        attributes: data.attributes,
+        methods: data.methods,
+        position,
+      })),
+      edges,
+    };
+    const figureJSON = JSON.stringify(figure, null, 2);
+    const blob = new Blob([figureJSON], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "class_diagram.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
-    <div style={{ width: "100%", height: "100vh", position: "relative" }}>
-      {/* Botón para añadir clases */}
-      <button
-        onClick={addClassNode}
-        style={{
-          position: "absolute",
-          zIndex: 10,
-          top: 10,
-          left: 10,
-          padding: "8px 12px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        ➕ Añadir Clase
-      </button>
+      <div style={{ width: "100%", height: "100vh", position: "relative" }}>
+          {/* Botón para añadir clases */}
+          <button
+              onClick={addClassNode}
+              style={{
+                  position: "absolute",
+                  zIndex: 10,
+                  top: 10,
+                  left: 10,
+                  padding: "8px 12px",
+                  backgroundColor: "#4CAF50",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+              }}
+          >
+              ➕ Añadir Clase
+          </button>
+              
+          <button
+              onClick={saveFigure}
+              style={{
+                  position: "absolute",
+                  zIndex: 10,
+                  top: 10,
+                  left: 130,
+                  padding: "8px 12px",
+                  backgroundColor: "#f44336",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+              }}
+          >
+            💾 Guardar Diagrama
+          </button>
 
-      {/* Instrucciones */}
-      <div
-        style={{
-          position: "absolute",
-          zIndex: 10,
-          top: 10,
-          right: 10,
-          backgroundColor: "white",
-          border: "1px solid #333",
-          borderRadius: "6px",
-          padding: "8px",
-          fontSize: "12px",
-          boxShadow: "0px 0px 10px rgba(0,0,0,0.2)",
-        }}
-      >
-        💡 Haz <strong>doble clic</strong> en una clase para editarla
+          {/* Instrucciones */}
+          <div
+              style={{
+                  position: "absolute",
+                  zIndex: 10,
+                  top: 10,
+                  right: 10,
+                  backgroundColor: "white",
+                  border: "1px solid #333",
+                  borderRadius: "6px",
+                  padding: "8px",
+                  fontSize: "12px",
+                  boxShadow: "0px 0px 10px rgba(0,0,0,0.2)",
+              }}
+          >
+              💡 Haz <strong>doble clic</strong> en una clase para editarla
+          </div>
+
+          <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+              fitView
+          >
+              <MiniMap />
+              <Controls />
+              <Background />
+          </ReactFlow>
       </div>
-
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        nodeTypes={nodeTypes}
-        fitView
-      >
-        <MiniMap />
-        <Controls />
-        <Background />
-      </ReactFlow>
-    </div>
   );
 }
