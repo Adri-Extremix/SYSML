@@ -14,11 +14,7 @@ import "reactflow/dist/style.css";
 // Nodo UML
 function ClassNode({ data, selected }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({
-    label: data.label,
-    attributes: data.attributes || [],
-    methods: data.methods || [],
-  });
+  const [editData, setEditData] = useState(data);
 
   const handleDoubleClick = (e) => {
     e.stopPropagation();
@@ -26,24 +22,14 @@ function ClassNode({ data, selected }) {
   };
 
   const handleSave = () => {
-    if (data.onChange) {
-      // Filtrar líneas vacías al guardar
-      const cleanedData = {
-        label: editData.label,
-        attributes: editData.attributes.filter(a => a.trim()),
-        methods: editData.methods.filter(m => m.trim()),
-      };
-      data.onChange(cleanedData);
-    }
+    data.label = editData.label;
+    data.attributes = editData.attributes?.filter((a) => a.trim());
+    data.methods = editData.methods?.filter((m) => m.trim());
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditData({
-      label: data.label,
-      attributes: data.attributes || [],
-      methods: data.methods || [],
-    });
+    setEditData(data);
     setIsEditing(false);
   };
 
@@ -72,7 +58,7 @@ function ClassNode({ data, selected }) {
         <div style={{ marginBottom: "8px" }}>
           <label style={{ fontSize: "12px", fontWeight: "bold" }}>Atributos (uno por línea):</label>
           <textarea
-            value={editData.attributes.join("\n")}
+            value={editData.attributes?.join("\n")}
             onChange={(e) => setEditData({ ...editData, attributes: e.target.value.split("\n") })}
             onKeyDown={(e) => e.stopPropagation()}
             style={{ width: "100%", padding: "4px", marginTop: "2px", minHeight: "60px", resize: "vertical" }}
@@ -81,7 +67,7 @@ function ClassNode({ data, selected }) {
         <div style={{ marginBottom: "8px" }}>
           <label style={{ fontSize: "12px", fontWeight: "bold" }}>Métodos (uno por línea):</label>
           <textarea
-            value={editData.methods.join("\n")}
+            value={editData.methods?.join("\n")}
             onChange={(e) => setEditData({ ...editData, methods: e.target.value.split("\n") })}
             onKeyDown={(e) => e.stopPropagation()}
             style={{ width: "100%", padding: "4px", marginTop: "2px", minHeight: "60px", resize: "vertical" }}
@@ -180,47 +166,39 @@ function ClassNode({ data, selected }) {
 
 const nodeTypes = { classNode: ClassNode };
 
+const initialNodes = [
+  {
+    id: "1",
+    type: "classNode",
+    position: { x: 100, y: 100 },
+    data: {
+      label: "Usuario",
+      attributes: ["+id: number", "+nombre: string"],
+      methods: ["login", "logout"],
+    },
+  },
+  {
+    id: "2",
+    type: "classNode",
+    position: { x: 400, y: 200 },
+    data: {
+      label: "Producto",
+      attributes: ["+id: number", "+precio: float"],
+      methods: ["calcularIVA"],
+    },
+  },
+];
+
+const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+
 export default function ClassDiagram() {
-  const initialNodes = [
-    {
-      id: "1",
-      type: "classNode",
-      position: { x: 100, y: 100 },
-      data: { label: "Usuario", attributes: ["+id: number", "+nombre: string"], methods: ["login", "logout"] },
-    },
-    {
-      id: "2",
-      type: "classNode",
-      position: { x: 400, y: 200 },
-      data: { label: "Producto", attributes: ["+id: number", "+precio: float"], methods: ["calcularIVA"] },
-    },
-  ];
-
-  const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
-
-  const [nodes, setNodes, onNodesChange] = useNodesState(
-    initialNodes.map((node) => ({
-      ...node,
-      data: {
-        ...node.data,
-        onChange: (newData) => {
-          setNodes((nds) =>
-            nds.map((n) =>
-              n.id === node.id
-                ? { ...n, data: { ...n.data, ...newData, onChange: n.data.onChange } }
-                : n
-            )
-          );
-        },
-      },
-    }))
-  );
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [idCounter, setIdCounter] = useState(3);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+    [setEdges],
   );
 
   const addClassNode = () => {
@@ -233,15 +211,6 @@ export default function ClassDiagram() {
         label: `Clase${idCounter}`,
         attributes: [],
         methods: [],
-        onChange: (newData) => {
-          setNodes((nds) =>
-            nds.map((n) =>
-              n.id === newId
-                ? { ...n, data: { ...n.data, ...newData, onChange: n.data.onChange } }
-                : n
-            )
-          );
-        },
       },
     };
     setNodes((nds) => [...nds, newNode]);
