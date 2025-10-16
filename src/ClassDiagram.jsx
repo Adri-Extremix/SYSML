@@ -16,6 +16,12 @@ function ClassNode({ data, selected }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState(data);
 
+  // Cerrar el modo edición si se recibe la señal
+  React.useEffect(() => {
+    if (isEditing) handleCancel();
+    // eslint-disable-next-line
+  }, [data.closeEditingSignal]);
+
   const handleDoubleClick = (e) => {
     e.stopPropagation();
     setIsEditing(true);
@@ -32,6 +38,41 @@ function ClassNode({ data, selected }) {
     setEditData(data);
     setIsEditing(false);
   };
+
+
+  /** Funcion que elimina toda la informacion del nodo y se mantiene en modo edicion
+  *  Si hay click en borrar, se limpian los datos y si pulsa en guardar, se guardan los datos vacios
+  *  Si pulsa en cancelar, se restauran los datos anteriores
+  */
+  const handleDelete = () => {
+    setEditData({
+      label: "", 
+      attributes: [],
+      methods: [],
+    });
+    // Mantener el modo edición para que el usuario pueda guardar los datos vacíos
+    setIsEditing(true);
+  };
+  
+  // Funcion para borrar toda la informacion del nodo y salir del modo edicion
+  /*
+  const handleDelete = () => {
+    // Llamar a onChange con datos vacíos para borrar el nodo
+    setEditData({
+      label: "",
+      attributes: [],
+      methods: [],
+    });
+
+    const cleanedData = {
+        label: "",
+        attributes: [],
+        methods: [],
+      };
+    data.onChange(cleanedData);
+    setIsEditing(false);
+  };
+  */
 
   if (isEditing) {
     return (
@@ -73,35 +114,54 @@ function ClassNode({ data, selected }) {
             style={{ width: "100%", padding: "4px", marginTop: "2px", minHeight: "60px", resize: "vertical" }}
           />
         </div>
-        <div style={{ display: "flex", gap: "6px" }}>
-          <button
-            onClick={handleSave}
-            style={{
-              padding: "4px 8px",
-              backgroundColor: "#4CAF50",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "12px",
-            }}
-          >
-            Guardar
-          </button>
-          <button
-            onClick={handleCancel}
-            style={{
-              padding: "4px 8px",
-              backgroundColor: "#f44336",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "12px",
-            }}
-          >
-            Cancelar
-          </button>
+        <div style={{ display: "flex", gap: "6px", justifyContent: "space-between" }}>
+          <div>
+            <button
+              onClick={handleSave}
+              style={{
+                padding: "4px 8px",
+                backgroundColor: "#4CAF50",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "12px",
+              }}
+            >
+              Guardar
+            </button>
+            <button
+              onClick={handleCancel}
+              style={{
+                padding: "4px 8px",
+                backgroundColor: "#f44336",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "12px",
+                marginLeft: "6px",
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+          <div>
+            <button
+              onClick={handleDelete}
+              style={{
+                padding: "4px 8px",
+                backgroundColor: "#b4160bff",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "12px",
+              }}
+            >
+              🗑️
+            </button>
+          </div>
         </div>
         <Handle type="source" position={Position.Right} />
         <Handle type="target" position={Position.Left} />
@@ -192,9 +252,17 @@ const initialNodes = [
 const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 
 export default function ClassDiagram() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [closeEditingSignal, setCloseEditingSignal] = useState(0);
   const [idCounter, setIdCounter] = useState(3);
+  // Estado inicial de nodos en la edicion
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes.map(n => ({
+    ...n,
+    data: {
+        ...n.data,
+        closeEditingSignal,
+    }
+  })));
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -258,7 +326,6 @@ export default function ClassDiagram() {
           >
               ➕ Añadir Clase
           </button>
-              
           <button
               onClick={saveFigure}
               style={{
@@ -303,6 +370,7 @@ export default function ClassDiagram() {
               onConnect={onConnect}
               nodeTypes={nodeTypes}
               fitView
+              onPaneClick={() => setCloseEditingSignal(s => s + 1)} // Cierra edición al clicar en el fondo
           >
               <MiniMap />
               <Controls />
