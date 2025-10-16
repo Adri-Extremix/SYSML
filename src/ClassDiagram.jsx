@@ -206,7 +206,7 @@ function ClassNode({ data, selected }) {
 
   let borderRadiusValue = 0;
   if (editData.type == "rounded") {
-    borderRadiusValue = 4;
+    borderRadiusValue = 12;
   }
 
   return (
@@ -228,6 +228,7 @@ function ClassNode({ data, selected }) {
           textAlign: "center",
           fontWeight: "bold",
           borderBottom: "1px solid #333",
+          borderRadius: borderRadiusValue,
         }}
       >
         {data.label}
@@ -363,6 +364,12 @@ export default function ClassDiagram() {
     URL.revokeObjectURL(url);
   };
 
+  const clearAll = () => {
+    setNodes([]);
+    setEdges([]);
+    setIdCounter(1);
+  };
+
   return (
     <div style={{ width: "100%", height: "100vh", position: "relative" }}>
       {/* Botón para añadir clases */}
@@ -385,12 +392,31 @@ export default function ClassDiagram() {
       </button>
       <SideMenu addNode={addClassNode} />
 
+      {/* Botón para borrar todo */}
+      <button
+        onClick={clearAll}
+        style={{
+          position: "absolute",
+          zIndex: 10,
+          top: 10,
+          right: 10,
+          padding: "8px 12px",
+          backgroundColor: "#f44336",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        🗑 Borrar Todo
+      </button>
+
       {/* Instrucciones */}
       <div
         style={{
           position: "absolute",
           zIndex: 10,
-          top: 10,
+          top: 50,
           right: 10,
           backgroundColor: "white",
           border: "1px solid #333",

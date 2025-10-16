@@ -111,7 +111,7 @@ export default function SideMenu({ addNode }) {
             <ListItem key={text} disablePadding onClick={() => addNode("rounded")}>
               <ListItemButton>
                 <ListItemIcon>
-                  <CropLandscapeSharpIcon />
+                  <CropLandscapeRoundedIcon />
                 </ListItemIcon>
                 <ListItemText primary={text} />
               </ListItemButton>
