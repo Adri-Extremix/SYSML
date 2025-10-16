@@ -43,7 +43,7 @@ function ClassNode({ data, selected }) {
    *  Si hay click en borrar, se limpian los datos y si pulsa en guardar, se guardan los datos vacios
    *  Si pulsa en cancelar, se restauran los datos anteriores
    */
-  const handleDelete = () => {
+  const handleDeleteContent = () => {
     setEditData({
       label: "",
       attributes: [],
@@ -51,6 +51,13 @@ function ClassNode({ data, selected }) {
     });
     // Mantener el modo edición para que el usuario pueda guardar los datos vacíos
     setIsEditing(true);
+  };
+
+  const handleDelete = () => {
+    if (data.onDelete) {
+      data.onDelete();
+    }
+    setIsEditing(false);
   };
 
   if (isEditing) {
@@ -156,6 +163,21 @@ function ClassNode({ data, selected }) {
               }}
             >
               Cancelar
+            </button>
+            <button
+              onClick={handleDeleteContent}
+              style={{
+                padding: "4px 8px",
+                backgroundColor: "#f44336",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "12px",
+                marginLeft: "6px",
+              }}
+            >
+              Borrar contenido
             </button>
           </div>
           <div>
@@ -268,11 +290,17 @@ export default function ClassDiagram() {
   const [idCounter, setIdCounter] = useState(3);
   // Estado inicial de nodos en la edicion
   const [nodes, setNodes, onNodesChange] = useNodesState(
-    initialNodes.map((n) => ({
-      ...n,
+    initialNodes.map((node) => ({
+      ...node,
       data: {
-        ...n.data,
+        ...node.data,
         closeEditingSignal,
+        onDelete: () => {
+          setNodes((nds) => nds.filter((n) => n.id !== node.id));
+          setEdges((eds) =>
+            eds.filter((e) => e.source !== node.id && e.target !== node.id),
+          );
+        },
       },
     })),
   );
@@ -293,6 +321,12 @@ export default function ClassDiagram() {
         label: `Clase${idCounter}`,
         attributes: [],
         methods: [],
+        onDelete: () => {
+          setNodes((nds) => nds.filter((n) => n.id !== newId));
+          setEdges((eds) =>
+            eds.filter((e) => e.source !== newId && e.target !== newId),
+          );
+        },
       },
     };
     setNodes((nds) => [...nds, newNode]);
