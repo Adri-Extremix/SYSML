@@ -39,40 +39,19 @@ function ClassNode({ data, selected }) {
     setIsEditing(false);
   };
 
-
   /** Funcion que elimina toda la informacion del nodo y se mantiene en modo edicion
-  *  Si hay click en borrar, se limpian los datos y si pulsa en guardar, se guardan los datos vacios
-  *  Si pulsa en cancelar, se restauran los datos anteriores
-  */
+   *  Si hay click en borrar, se limpian los datos y si pulsa en guardar, se guardan los datos vacios
+   *  Si pulsa en cancelar, se restauran los datos anteriores
+   */
   const handleDelete = () => {
     setEditData({
-      label: "", 
+      label: "",
       attributes: [],
       methods: [],
     });
     // Mantener el modo edición para que el usuario pueda guardar los datos vacíos
     setIsEditing(true);
   };
-  
-  // Funcion para borrar toda la informacion del nodo y salir del modo edicion
-  /*
-  const handleDelete = () => {
-    // Llamar a onChange con datos vacíos para borrar el nodo
-    setEditData({
-      label: "",
-      attributes: [],
-      methods: [],
-    });
-
-    const cleanedData = {
-        label: "",
-        attributes: [],
-        methods: [],
-      };
-    data.onChange(cleanedData);
-    setIsEditing(false);
-  };
-  */
 
   if (isEditing) {
     return (
@@ -87,34 +66,67 @@ function ClassNode({ data, selected }) {
         }}
       >
         <div style={{ marginBottom: "8px" }}>
-          <label style={{ fontSize: "12px", fontWeight: "bold" }}>Nombre:</label>
+          <label style={{ fontSize: "12px", fontWeight: "bold" }}>
+            Nombre:
+          </label>
           <input
             type="text"
             value={editData.label}
-            onChange={(e) => setEditData({ ...editData, label: e.target.value })}
+            onChange={(e) =>
+              setEditData({ ...editData, label: e.target.value })
+            }
             style={{ width: "100%", padding: "4px", marginTop: "2px" }}
             autoFocus
           />
         </div>
         <div style={{ marginBottom: "8px" }}>
-          <label style={{ fontSize: "12px", fontWeight: "bold" }}>Atributos (uno por línea):</label>
+          <label style={{ fontSize: "12px", fontWeight: "bold" }}>
+            Atributos (uno por línea):
+          </label>
           <textarea
             value={editData.attributes?.join("\n")}
-            onChange={(e) => setEditData({ ...editData, attributes: e.target.value.split("\n") })}
+            onChange={(e) =>
+              setEditData({
+                ...editData,
+                attributes: e.target.value.split("\n"),
+              })
+            }
             onKeyDown={(e) => e.stopPropagation()}
-            style={{ width: "100%", padding: "4px", marginTop: "2px", minHeight: "60px", resize: "vertical" }}
+            style={{
+              width: "100%",
+              padding: "4px",
+              marginTop: "2px",
+              minHeight: "60px",
+              resize: "vertical",
+            }}
           />
         </div>
         <div style={{ marginBottom: "8px" }}>
-          <label style={{ fontSize: "12px", fontWeight: "bold" }}>Métodos (uno por línea):</label>
+          <label style={{ fontSize: "12px", fontWeight: "bold" }}>
+            Métodos (uno por línea):
+          </label>
           <textarea
             value={editData.methods?.join("\n")}
-            onChange={(e) => setEditData({ ...editData, methods: e.target.value.split("\n") })}
+            onChange={(e) =>
+              setEditData({ ...editData, methods: e.target.value.split("\n") })
+            }
             onKeyDown={(e) => e.stopPropagation()}
-            style={{ width: "100%", padding: "4px", marginTop: "2px", minHeight: "60px", resize: "vertical" }}
+            style={{
+              width: "100%",
+              padding: "4px",
+              marginTop: "2px",
+              minHeight: "60px",
+              resize: "vertical",
+            }}
           />
         </div>
-        <div style={{ display: "flex", gap: "6px", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "6px",
+            justifyContent: "space-between",
+          }}
+        >
           <div>
             <button
               onClick={handleSave}
@@ -193,30 +205,30 @@ function ClassNode({ data, selected }) {
         {data.label}
       </div>
       <div style={{ padding: "6px", borderBottom: "1px solid #333" }}>
-        {data.attributes?.length > 0
-          ? data.attributes.map((attr, i) => (
-              <div key={i} style={{ fontSize: "14px" }}>
-                {attr}
-              </div>
-            ))
-          : (
-            <div style={{ fontSize: "12px", fontStyle: "italic", color: "#666" }}>
-              (sin atributos)
+        {data.attributes?.length > 0 ? (
+          data.attributes.map((attr, i) => (
+            <div key={i} style={{ fontSize: "14px" }}>
+              {attr}
             </div>
-          )}
+          ))
+        ) : (
+          <div style={{ fontSize: "12px", fontStyle: "italic", color: "#666" }}>
+            (sin atributos)
+          </div>
+        )}
       </div>
       <div style={{ padding: "6px" }}>
-        {data.methods?.length > 0
-          ? data.methods.map((m, i) => (
-              <div key={i} style={{ fontSize: "14px", fontStyle: "italic" }}>
-                {m}()
-              </div>
-            ))
-          : (
-            <div style={{ fontSize: "12px", fontStyle: "italic", color: "#666" }}>
-              (sin métodos)
+        {data.methods?.length > 0 ? (
+          data.methods.map((m, i) => (
+            <div key={i} style={{ fontSize: "14px", fontStyle: "italic" }}>
+              {m}()
             </div>
-          )}
+          ))
+        ) : (
+          <div style={{ fontSize: "12px", fontStyle: "italic", color: "#666" }}>
+            (sin métodos)
+          </div>
+        )}
       </div>
       <Handle type="source" position={Position.Right} />
       <Handle type="target" position={Position.Left} />
@@ -255,13 +267,15 @@ export default function ClassDiagram() {
   const [closeEditingSignal, setCloseEditingSignal] = useState(0);
   const [idCounter, setIdCounter] = useState(3);
   // Estado inicial de nodos en la edicion
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes.map(n => ({
-    ...n,
-    data: {
+  const [nodes, setNodes, onNodesChange] = useNodesState(
+    initialNodes.map((n) => ({
+      ...n,
+      data: {
         ...n.data,
         closeEditingSignal,
-    }
-  })));
+      },
+    })),
+  );
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
@@ -304,78 +318,78 @@ export default function ClassDiagram() {
     a.download = "class_diagram.json";
     a.click();
     URL.revokeObjectURL(url);
-  }
+  };
 
   return (
-      <div style={{ width: "100%", height: "100vh", position: "relative" }}>
-          {/* Botón para añadir clases */}
-          <button
-              onClick={addClassNode}
-              style={{
-                  position: "absolute",
-                  zIndex: 10,
-                  top: 10,
-                  left: 10,
-                  padding: "8px 12px",
-                  backgroundColor: "#4CAF50",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-              }}
-          >
-              ➕ Añadir Clase
-          </button>
-          <button
-              onClick={saveFigure}
-              style={{
-                  position: "absolute",
-                  zIndex: 10,
-                  top: 10,
-                  left: 130,
-                  padding: "8px 12px",
-                  backgroundColor: "#f44336",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-              }}
-          >
-            💾 Guardar Diagrama
-          </button>
+    <div style={{ width: "100%", height: "100vh", position: "relative" }}>
+      {/* Botón para añadir clases */}
+      <button
+        onClick={addClassNode}
+        style={{
+          position: "absolute",
+          zIndex: 10,
+          top: 10,
+          left: 10,
+          padding: "8px 12px",
+          backgroundColor: "#4CAF50",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        ➕ Añadir Clase
+      </button>
+      <button
+        onClick={saveFigure}
+        style={{
+          position: "absolute",
+          zIndex: 10,
+          top: 10,
+          left: 130,
+          padding: "8px 12px",
+          backgroundColor: "#f44336",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        💾 Guardar Diagrama
+      </button>
 
-          {/* Instrucciones */}
-          <div
-              style={{
-                  position: "absolute",
-                  zIndex: 10,
-                  top: 10,
-                  right: 10,
-                  backgroundColor: "white",
-                  border: "1px solid #333",
-                  borderRadius: "6px",
-                  padding: "8px",
-                  fontSize: "12px",
-                  boxShadow: "0px 0px 10px rgba(0,0,0,0.2)",
-              }}
-          >
-              💡 Haz <strong>doble clic</strong> en una clase para editarla
-          </div>
-
-          <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              nodeTypes={nodeTypes}
-              fitView
-              onPaneClick={() => setCloseEditingSignal(s => s + 1)} // Cierra edición al clicar en el fondo
-          >
-              <MiniMap />
-              <Controls />
-              <Background />
-          </ReactFlow>
+      {/* Instrucciones */}
+      <div
+        style={{
+          position: "absolute",
+          zIndex: 10,
+          top: 10,
+          right: 10,
+          backgroundColor: "white",
+          border: "1px solid #333",
+          borderRadius: "6px",
+          padding: "8px",
+          fontSize: "12px",
+          boxShadow: "0px 0px 10px rgba(0,0,0,0.2)",
+        }}
+      >
+        💡 Haz <strong>doble clic</strong> en una clase para editarla
       </div>
+
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodeTypes={nodeTypes}
+        fitView
+        onPaneClick={() => setCloseEditingSignal((s) => s + 1)} // Cierra edición al clicar en el fondo
+      >
+        <MiniMap />
+        <Controls />
+        <Background />
+      </ReactFlow>
+    </div>
   );
 }
