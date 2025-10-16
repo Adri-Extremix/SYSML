@@ -14,11 +14,7 @@ import "reactflow/dist/style.css";
 // Nodo UML
 function ClassNode({ data, selected }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({
-    label: data.label,
-    attributes: data.attributes || [],
-    methods: data.methods || [],
-  });
+  const [editData, setEditData] = useState(data);
 
   // Cerrar el modo edición si se recibe la señal
   React.useEffect(() => {
@@ -32,24 +28,14 @@ function ClassNode({ data, selected }) {
   };
 
   const handleSave = () => {
-    if (data.onChange) {
-      // Filtrar líneas vacías al guardar
-      const cleanedData = {
-        label: editData.label,
-        attributes: editData.attributes.filter(a => a.trim()),
-        methods: editData.methods.filter(m => m.trim()),
-      };
-      data.onChange(cleanedData);
-    }
+    data.label = editData.label;
+    data.attributes = editData.attributes?.filter((a) => a.trim());
+    data.methods = editData.methods?.filter((m) => m.trim());
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditData({
-      label: data.label,
-      attributes: data.attributes || [],
-      methods: data.methods || [],
-    });
+    setEditData(data);
     setIsEditing(false);
   };
 
@@ -113,7 +99,7 @@ function ClassNode({ data, selected }) {
         <div style={{ marginBottom: "8px" }}>
           <label style={{ fontSize: "12px", fontWeight: "bold" }}>Atributos (uno por línea):</label>
           <textarea
-            value={editData.attributes.join("\n")}
+            value={editData.attributes?.join("\n")}
             onChange={(e) => setEditData({ ...editData, attributes: e.target.value.split("\n") })}
             onKeyDown={(e) => e.stopPropagation()}
             style={{ width: "100%", padding: "4px", marginTop: "2px", minHeight: "60px", resize: "vertical" }}
@@ -122,7 +108,7 @@ function ClassNode({ data, selected }) {
         <div style={{ marginBottom: "8px" }}>
           <label style={{ fontSize: "12px", fontWeight: "bold" }}>Métodos (uno por línea):</label>
           <textarea
-            value={editData.methods.join("\n")}
+            value={editData.methods?.join("\n")}
             onChange={(e) => setEditData({ ...editData, methods: e.target.value.split("\n") })}
             onKeyDown={(e) => e.stopPropagation()}
             style={{ width: "100%", padding: "4px", marginTop: "2px", minHeight: "60px", resize: "vertical" }}
@@ -240,50 +226,40 @@ function ClassNode({ data, selected }) {
 
 const nodeTypes = { classNode: ClassNode };
 
+const initialNodes = [
+  {
+    id: "1",
+    type: "classNode",
+    position: { x: 100, y: 100 },
+    data: {
+      label: "Usuario",
+      attributes: ["+id: number", "+nombre: string"],
+      methods: ["login", "logout"],
+    },
+  },
+  {
+    id: "2",
+    type: "classNode",
+    position: { x: 400, y: 200 },
+    data: {
+      label: "Producto",
+      attributes: ["+id: number", "+precio: float"],
+      methods: ["calcularIVA"],
+    },
+  },
+];
+
+const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+
 export default function ClassDiagram() {
-  const initialNodes = [
-    {
-      id: "1",
-      type: "classNode",
-      position: { x: 100, y: 100 },
-      data: { label: "Usuario", attributes: ["+id: number", "+nombre: string"], methods: ["login", "logout"] },
-    },
-    {
-      id: "2",
-      type: "classNode",
-      position: { x: 400, y: 200 },
-      data: { label: "Producto", attributes: ["+id: number", "+precio: float"], methods: ["calcularIVA"] },
-    },
-  ];
-
-  // Estado inicial de nodos en la edicion
-  const [closeEditingSignal, setCloseEditingSignal] = useState(0);
-
-  const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
-
-  const [nodes, setNodes, onNodesChange] = useNodesState(
-    initialNodes.map((node) => ({
-      ...node,
-      data: {
-        ...node.data,
-        onChange: (newData) => {
-          setNodes((nds) =>
-            nds.map((n) =>
-              n.id === node.id
-                ? { ...n, data: { ...n.data, ...newData, onChange: n.data.onChange } }
-                : n
-            )
-          );
-        },
-      },
-    }))
-  );
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [idCounter, setIdCounter] = useState(3);
-
+  const [closeEditingSignal, setCloseEditingSignal] = useState(0);
+  
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+    [setEdges],
   );
 
   const addClassNode = () => {
@@ -296,41 +272,71 @@ export default function ClassDiagram() {
         label: `Clase${idCounter}`,
         attributes: [],
         methods: [],
-        onChange: (newData) => {
-          setNodes((nds) =>
-            nds.map((n) =>
-              n.id === newId
-                ? { ...n, data: { ...n.data, ...newData, onChange: n.data.onChange } }
-                : n
-            )
-          );
-        },
       },
     };
     setNodes((nds) => [...nds, newNode]);
     setIdCounter((prev) => prev + 1);
   };
 
+  const saveFigure = () => {
+    const figure = {
+      nodes: nodes.map(({ id, data, position }) => ({
+        id,
+        label: data.label,
+        attributes: data.attributes,
+        methods: data.methods,
+        position,
+      })),
+      edges,
+    };
+    const figureJSON = JSON.stringify(figure, null, 2);
+    const blob = new Blob([figureJSON], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "class_diagram.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
-    <div style={{ width: "100%", height: "100vh", position: "relative" }}>
-      {/* Botón para añadir clases */}
-      <button
-        onClick={addClassNode}
-        style={{
-          position: "absolute",
-          zIndex: 10,
-          top: 10,
-          left: 10,
-          padding: "8px 12px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        ➕ Añadir Clase
-      </button>
+      <div style={{ width: "100%", height: "100vh", position: "relative" }}>
+          {/* Botón para añadir clases */}
+          <button
+              onClick={addClassNode}
+              style={{
+                  position: "absolute",
+                  zIndex: 10,
+                  top: 10,
+                  left: 10,
+                  padding: "8px 12px",
+                  backgroundColor: "#4CAF50",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+              }}
+          >
+              ➕ Añadir Clase
+          </button>
+              
+          <button
+              onClick={saveFigure}
+              style={{
+                  position: "absolute",
+                  zIndex: 10,
+                  top: 10,
+                  left: 130,
+                  padding: "8px 12px",
+                  backgroundColor: "#f44336",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+              }}
+          >
+            💾 Guardar Diagrama
+          </button>
 
       {/* Instrucciones */}
       <div
@@ -363,8 +369,7 @@ export default function ClassDiagram() {
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       nodeTypes={nodeTypes}
-      //fitView // Esto centra y ajusta el zoom al contenido
-      defaultViewport={{ x: 0, y: 0, zoom: 1.5 }} // Ajusta el zoom según lo que necesites
+      fitView // Esto centra y ajusta el zoom al contenido
       onPaneClick={() => setCloseEditingSignal(s => s + 1)} // Cierra edición al clicar en el fondo
     >
       <MiniMap />
