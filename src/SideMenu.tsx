@@ -56,6 +56,11 @@ export default function SideMenu({ addNode }) {
     setOpen(false);
   };
 
+  const types = {
+      "Clase Cuadrada": {type: "squared", icon: <CropLandscapeSharpIcon />},
+      "Clase Redondeada": {type: "rounded", icon: <CropLandscapeRoundedIcon />},
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       
@@ -94,23 +99,11 @@ export default function SideMenu({ addNode }) {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Clase Cuadrada'].map((text, index) => (
-            <ListItem key={text} disablePadding onClick={() => addNode("squared")}>
+          {Object.entries(types).map(([text, {type, icon}]) => (
+            <ListItem key={text} disablePadding onClick={() => addNode(type)}>
               <ListItemButton>
                 <ListItemIcon>
-                  <CropLandscapeSharpIcon />
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <List>
-          {['Clase Redondeada'].map((text, index) => (
-            <ListItem key={text} disablePadding onClick={() => addNode("rounded")}>
-              <ListItemButton>
-                <ListItemIcon>
-                  <CropLandscapeRoundedIcon />
+                  {icon}
                 </ListItemIcon>
                 <ListItemText primary={text} />
               </ListItemButton>
