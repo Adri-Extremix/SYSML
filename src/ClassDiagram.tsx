@@ -1,5 +1,9 @@
 import React, { useCallback, useState } from "react";
-import ReactFlow, {
+import {
+  type NodeProps,
+  type Node,
+  type Edge,
+  ReactFlow,
   MiniMap,
   Controls,
   Background,
@@ -8,22 +12,40 @@ import ReactFlow, {
   addEdge,
   Handle,
   Position,
-} from "reactflow";
-import "reactflow/dist/style.css";
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+
 import SideMenu from "./SideMenu";
 
+enum NodeType {
+  rounded = "rounded",
+  squared = "squared",
+}
+
+type NodeUserData = {
+  label: string,
+  attributes: string[],
+  methods: string[],
+}
+
+type NodeData = NodeUserData & { type: NodeType }
+
+type NodeMethods = {
+  closeEditingSignal: number
+  onDelete: () => void,
+}
+
 // Nodo UML
-function ClassNode({ data, selected }) {
+function ClassNode({ data, selected }: NodeProps<Node<NodeData & NodeMethods>>) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState(data);
+  const [editData, setEditData] = useState(data as NodeUserData);
 
   // Cerrar el modo edición si se recibe la señal
   React.useEffect(() => {
     if (isEditing) handleCancel();
-    // eslint-disable-next-line
   }, [data.closeEditingSignal]);
 
-  const handleDoubleClick = (e) => {
+  const handleDoubleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     setIsEditing(true);
   };
@@ -204,10 +226,7 @@ function ClassNode({ data, selected }) {
     );
   }
 
-  let borderRadiusValue = 0;
-  if (editData.type == "rounded") {
-    borderRadiusValue = 12;
-  }
+  const borderRadiusValue = data.type == "rounded" ? 12 : 0;
 
   return (
     <div
@@ -267,7 +286,7 @@ function ClassNode({ data, selected }) {
 
 const nodeTypes = { classNode: ClassNode };
 
-const initialNodes = [
+const initialNodes: Node<NodeData>[] = [
   {
     id: "1",
     type: "classNode",
@@ -276,7 +295,7 @@ const initialNodes = [
       label: "Usuario",
       attributes: ["+id: number", "+nombre: string"],
       methods: ["login", "logout"],
-      type: "squared",
+      type: NodeType.squared,
     },
   },
   {
@@ -287,12 +306,12 @@ const initialNodes = [
       label: "Producto",
       attributes: ["+id: number", "+precio: float"],
       methods: ["calcularIVA"],
-      type: "rounded",
+      type: NodeType.rounded,
     },
   },
 ];
 
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+const initialEdges: Edge[] = [{ id: "e1-2", source: "1", target: "2" }];
 
 export default function ClassDiagram() {
   const [closeEditingSignal, setCloseEditingSignal] = useState(0);
@@ -316,13 +335,13 @@ export default function ClassDiagram() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
+    (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],
   );
 
-  const addClassNode = (typeOfNode) => {
+  const addClassNode = (typeOfNode: NodeType) => {
     const newId = `${idCounter}`;
-    const newNode = {
+    const newNode: Node<NodeData & NodeMethods> = {
       id: newId,
       type: "classNode",
       position: { x: Math.random() * 400 + 50, y: Math.random() * 300 + 50 },
@@ -331,6 +350,7 @@ export default function ClassDiagram() {
         attributes: [],
         methods: [],
         type: typeOfNode,
+        closeEditingSignal,
         onDelete: () => {
           setNodes((nds) => nds.filter((n) => n.id !== newId));
           setEdges((eds) =>

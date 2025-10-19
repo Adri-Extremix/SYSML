@@ -25,7 +25,6 @@ const AppBar = styled(MuiAppBar, {
   }),
   variants: [
     {
-      props: ({ open }) => open,
       style: {
         width: `calc(100% - ${drawerWidth}px)`,
         marginLeft: `${drawerWidth}px`,
