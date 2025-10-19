@@ -18,8 +18,10 @@ import ClassNode, {
   type CustomNode,
   NodeType,
 } from "./ClassNode";
+import ButtonEdge from "./ButtonEdge"
 
 const nodeTypes = { classNode: ClassNode };
+const edgeTypes = { default: ButtonEdge };
 
 const initialNodes: Node<NodeData>[] = [
   {
@@ -70,7 +72,9 @@ export default function ClassDiagram() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
-    (params: any) => setEdges((eds) => addEdge(params, eds)),
+    (params: any) => setEdges((eds) => {
+      return addEdge(params, eds)
+    }),
     [setEdges],
   );
 
@@ -191,6 +195,7 @@ export default function ClassDiagram() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         fitView
         onPaneClick={() => setCloseEditingSignal((s) => s + 1)} // Cierra edición al clicar en el fondo
       >
