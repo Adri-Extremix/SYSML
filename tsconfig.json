@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
     // Environment setup & latest features
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ES2024"],
+    "target": "ES2024",
     "module": "ESNext",
-    "moduleDetection": "force",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
-    "allowJs": true,
-    "checkJs": true,
+    "allowJs": false,
     "isolatedModules": true,
     // Bundler mode
     "moduleResolution": "bundler",
@@ -25,7 +23,6 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
-    "useDefineForClassFields": true
   },
-  "include": ["./**/*.d.ts", "./**/*.{js,jsx,ts,tsx}"]
+  "include": ["src/**/*.d.ts", "src/**/*.{ts,tsx}"]
 }
