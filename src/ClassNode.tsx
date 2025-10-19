@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   type NodeProps,
   type Node,
+  useReactFlow,
   Handle,
   Position,
 } from "@xyflow/react";
@@ -21,15 +22,15 @@ export type NodeData = NodeUserData & { type: NodeType }
 
 type NodeMethods = {
   closeEditingSignal: number
-  onDelete: () => void,
 }
 
 export type CustomNode = Node<NodeData & NodeMethods>;
 
 // Nodo UML
-export default function ClassNode({ data, selected }: NodeProps<CustomNode>) {
+export default function ClassNode({ data, selected, id }: NodeProps<CustomNode>) {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState(data as NodeUserData);
+  const { setNodes, setEdges } = useReactFlow();
 
   // Cerrar el modo edición si se recibe la señal
   React.useEffect(() => {
@@ -68,9 +69,8 @@ export default function ClassNode({ data, selected }: NodeProps<CustomNode>) {
   };
 
   const handleDelete = () => {
-    if (data.onDelete) {
-      data.onDelete();
-    }
+    setNodes((nodes) => nodes.filter((node) => node.id !== id));
+    setEdges((edges) => edges.filter((edge) => edge.source !== id && edge.target !== id));
     setIsEditing(false);
   };
 

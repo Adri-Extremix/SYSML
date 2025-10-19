@@ -60,12 +60,6 @@ export default function ClassDiagram() {
       data: {
         ...node.data,
         closeEditingSignal,
-        onDelete: () => {
-          setNodes((nds) => nds.filter((n) => n.id !== node.id));
-          setEdges((eds) =>
-            eds.filter((e) => e.source !== node.id && e.target !== node.id),
-          );
-        },
       },
     })),
   );
@@ -90,12 +84,6 @@ export default function ClassDiagram() {
         methods: [],
         type: typeOfNode,
         closeEditingSignal,
-        onDelete: () => {
-          setNodes((nds) => nds.filter((n) => n.id !== newId));
-          setEdges((eds) =>
-            eds.filter((e) => e.source !== newId && e.target !== newId),
-          );
-        },
       },
     };
     setNodes((nds) => [...nds, newNode]);
