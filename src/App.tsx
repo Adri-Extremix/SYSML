@@ -3,11 +3,11 @@ import ClassDiagram from "./ClassDiagram";
 import SideMenu from "./SideMenu";
 
 function App() {
-  return (
-    <div style={{ width: "100%", height: "100vh" }}>
-      <ClassDiagram />
-    </div>
-  );
+    return (
+        <div style={{ width: "100%", height: "100vh" }}>
+            <ClassDiagram />
+        </div>
+    );
 }
 
 export default App;
