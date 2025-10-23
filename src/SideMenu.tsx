@@ -16,27 +16,6 @@ import CropLandscapeSharpIcon from "@mui/icons-material/CropLandscapeSharp";
 
 const drawerWidth = 400;
 
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: prop => prop !== "open",
-})(({ theme }) => ({
-    transition: theme.transitions.create(["margin", "width"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    variants: [
-        {
-            style: {
-                width: `calc(100% - ${drawerWidth}px)`,
-                marginLeft: `${drawerWidth}px`,
-                transition: theme.transitions.create(["margin", "width"], {
-                    easing: theme.transitions.easing.easeOut,
-                    duration: theme.transitions.duration.enteringScreen,
-                }),
-            },
-        },
-    ],
-}));
-
 const DrawerHeader = styled("div")(({ theme }) => ({
     display: "block",
     alignItems: "left",
@@ -45,7 +24,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function SideMenu({ addNode }) {
-    const theme = useTheme();
     const [open, setOpen] = React.useState(false);
 
     const handleDrawerOpen = () => {
