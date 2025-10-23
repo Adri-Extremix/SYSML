@@ -54,16 +54,16 @@ export default function ClassDiagram() {
     const [closeEditingSignal, setCloseEditingSignal] = useState(0);
     const [idCounter, setIdCounter] = useState(3);
     // Estado inicial de nodos en la edicion
-    const [nodes, setNodes, onNodesChange] = useNodesState(
-        initialNodes.map(node => ({
-            ...node,
-            data: {
-                ...node.data,
-                closeEditingSignal,
-            },
-        })),
-    );
+    const [initial_nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+    const nodes = initial_nodes.map(n => ({
+        ...n,
+        data: {
+            ...n.data,
+            closeEditingSignal,
+        },
+    }))
 
     const onConnect = useCallback(
         (params: any) =>
