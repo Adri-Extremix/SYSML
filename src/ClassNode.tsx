@@ -34,6 +34,7 @@ export default function ClassNode({
 }: NodeProps<CustomNode>) {
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState(data as NodeUserData);
+    const [showHandles, setShowHandles] = useState(false);
     const { setNodes, setEdges } = useReactFlow();
 
     // Cerrar el modo edición si se recibe la señal
@@ -78,6 +79,47 @@ export default function ClassNode({
             edges.filter(edge => edge.source !== id && edge.target !== id),
         );
         setIsEditing(false);
+    };
+
+    const renderHandles = () => {
+        const positions = [
+            Position.Top,
+            Position.Right,
+            Position.Bottom,
+            Position.Left,
+        ];
+        const handlesPerSide = 4;
+        const handles: React.ReactElement[] = [];
+
+        positions.forEach(position => {
+            for (let i = 0; i < handlesPerSide; i++) {
+                const offset = ((i + 1) / (handlesPerSide + 1)) * 100;
+                const isVertical =
+                    position === Position.Top || position === Position.Bottom;
+
+                const style: React.CSSProperties = {
+                    [isVertical ? "left" : "top"]: `${offset}%`,
+                    opacity: showHandles ? 1 : 0,
+                    transition: "opacity 0.2s",
+                    width: "8px",
+                    height: "8px",
+                    background: "#555",
+                };
+
+                const handleId = `${position}-${i}`;
+
+                handles.push(
+                    <Handle
+                        key={`${handleId}-source`}
+                        type="source"
+                        position={position}
+                        id={`${handleId}-source`}
+                        style={style}
+                    />,
+                );
+            }
+        });
+        return handles;
     };
 
     if (isEditing) {
@@ -224,8 +266,7 @@ export default function ClassNode({
                         </button>
                     </div>
                 </div>
-                <Handle type="source" position={Position.Right} />
-                <Handle type="target" position={Position.Left} />
+                {renderHandles()}
             </div>
         );
     }
@@ -235,6 +276,8 @@ export default function ClassNode({
     return (
         <div
             onDoubleClick={handleDoubleClick}
+            onMouseEnter={() => setShowHandles(true)}
+            onMouseLeave={() => setShowHandles(false)}
             style={{
                 border: selected ? "2px solid #2196F3" : "2px solid #333",
                 borderRadius: borderRadiusValue,
@@ -297,8 +340,7 @@ export default function ClassNode({
                     </div>
                 )}
             </div>
-            <Handle type="source" position={Position.Right} />
-            <Handle type="target" position={Position.Left} />
+            {renderHandles()}
         </div>
     );
 }

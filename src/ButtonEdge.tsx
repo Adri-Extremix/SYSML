@@ -7,6 +7,7 @@ import {
 } from "@xyflow/react";
 
 export default function CustomEdge(props: EdgeProps) {
+    const { id, markerEnd, style } = props;
     const [edgePath, labelX, labelY] = getBezierPath(props);
 
     const { setEdges } = useReactFlow();
@@ -16,7 +17,7 @@ export default function CustomEdge(props: EdgeProps) {
 
     return (
         <>
-            <BaseEdge path={edgePath} {...props} />
+            <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} />
             <EdgeLabelRenderer>
                 <div
                     className="button-edge__label nodrag nopan"
