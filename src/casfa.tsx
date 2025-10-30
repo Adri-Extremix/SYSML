@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useStore } from "@xyflow/react";
-
 import {
     type NodeProps,
     type Node,
@@ -48,6 +46,19 @@ export default function ClassNode({
         setIsEditing(true);
     };
 
+    const [connectedHandleIds, setConnectedHandleIds] = React.useState<string[]>([]);
+
+    React.useEffect(() => {
+    const edges = getEdges();
+    const connected = edges
+        .filter(e => e.source === id || e.target === id)
+        .map(e => (e.source === id ? e.sourceHandle : e.targetHandle))
+        .filter(Boolean) as string[];
+    setConnectedHandleIds(connected);
+    }, [getEdges, id]);
+
+
+
     const handleSave = () => {
         data.label = editData.label;
         data.attributes = editData.attributes?.filter(a => a.trim());
@@ -82,26 +93,13 @@ export default function ClassNode({
         setIsEditing(false);
     };
 
-    const edges = useStore(state => state.edges);
-    const [connectedHandleIds, setConnectedHandleIds] = React.useState<string[]>([]);
-
-    React.useEffect(() => {
-    const connected = edges
-        .filter(e => e.source === id || e.target === id)
-        .map(e => (e.source === id ? e.sourceHandle : e.targetHandle))
-        .filter(Boolean) as string[];
-
-    setConnectedHandleIds(connected);
-    }, [edges, id]);
-
-
-
     if (isEditing) {
         return (
             <div
                 className="custom-node"
                 style={{
                     border: "2px solid #2196F3",
+                    position: "relative",
                     borderRadius: "4px",
                     backgroundColor: "white",
                     minWidth: "200px",
@@ -294,6 +292,7 @@ export default function ClassNode({
                 border: selected ? "2px solid #2196F3" : "2px solid #333",
                 borderRadius: borderRadiusValue,
                 backgroundColor: "white",
+                position: "relative",
                 minWidth: "160px",
                 fontFamily: "Arial, sans-serif",
                 cursor: "pointer",
@@ -391,6 +390,7 @@ export default function ClassNode({
                 <Handle type="source" position={Position.Right} id="right-2b" style={{ top: "40%" }} className={connectedHandleIds.includes("right-2b") ? "connected" : ""}/>
                 <Handle type="target" position={Position.Right} id="right-3b" style={{ top: "60%" }} className={connectedHandleIds.includes("right-3b") ? "connected" : ""}/>
                 <Handle type="source" position={Position.Right} id="right-4b" style={{ top: "80%" }} className={connectedHandleIds.includes("right-4b") ? "connected" : ""}/>
+
         </div>
     );
 }
