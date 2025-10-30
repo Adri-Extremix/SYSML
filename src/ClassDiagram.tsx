@@ -9,7 +9,7 @@ import {
     useNodesState,
     useEdgesState,
     addEdge,
-    ConnectionMode
+    ConnectionMode,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -68,22 +68,22 @@ export default function ClassDiagram() {
     }));
 
     const onConnect = useCallback(
-        (params: any) =>{
-            
+        (params: any) => {
             if (params.source === params.target) return;
-            
-            setEdges(eds => {
 
+            setEdges(eds => {
                 const filteredEdges = eds.filter(
                     edge =>
                         !(
-                            (edge.source === params.source && edge.target === params.target) ||
-                            (edge.source === params.target && edge.target === params.source)
-                        )
+                            (edge.source === params.source &&
+                                edge.target === params.target) ||
+                            (edge.source === params.target &&
+                                edge.target === params.source)
+                        ),
                 );
                 return addEdge(params, filteredEdges);
-            }
-        )},
+            });
+        },
         [setEdges],
     );
 
