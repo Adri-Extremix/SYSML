@@ -14,7 +14,7 @@ import ListItemText from "@mui/material/ListItemText";
 import CropLandscapeRoundedIcon from "@mui/icons-material/CropLandscapeRounded";
 import CropLandscapeSharpIcon from "@mui/icons-material/CropLandscapeSharp";
 
-const drawerWidth = 400;
+const drawerWidth = 320;
 
 const DrawerHeader = styled("div")(({ theme }) => ({
     display: "block",
@@ -94,7 +94,7 @@ export default function SideMenu({ addNode }) {
                                 setOpen(false);
                             }}
                         >
-                            <ListItemButton>
+                            <ListItemButton divider="true">
                                 <ListItemIcon>{icon}</ListItemIcon>
                                 <ListItemText primary={text} />
                             </ListItemButton>
