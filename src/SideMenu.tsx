@@ -60,19 +60,7 @@ export default function SideMenu({ addNode }) {
     return (
         <Box sx={{ display: "flex" }}>
             {!open && (
-                <button
-                    onClick={handleDrawerOpen}
-                    style={{
-                        position: "relative",
-                        zIndex: 999,
-                        margin: 10,
-                        width: "auto",
-                        fontSize: "14pt",
-                        padding: 6,
-                        backgroundColor: "white",
-                        borderRadius: 5,
-                    }}
-                >
+                <button onClick={handleDrawerOpen} className="add-class">
                     Añadir clase
                 </button>
             )}

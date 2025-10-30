@@ -1,1 +1,12 @@
 /*Archivo para definir los estilos de los nodos*/
+:root {
+  --node-width: 120px;
+  --node-height: 40px;
+  --node-border-radius: 8px;
+  --node-bg-color: #f0f0f0;
+  --node-border-color: #ccc;
+  --node-font-size: 14px;
+  --node-font-color: #333;
+
+  --delete-button-color: #ff4d4d;
+}

@@ -1,0 +1,40 @@
+.save-button {
+  position: absolute;
+  z-index: 10;
+  top: 2%;
+  left: 10%;
+  min-height: 6vh;
+  padding: 8px 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button {
+  position: absolute;
+  z-index: 10;
+  top: 2%;
+  right: 2%;
+  min-height: 6vh;
+  padding: 8px 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-class {
+  position: absolute;
+  z-index: 999;
+  top: 2%;
+  left: 2%;
+  min-height: 6vh;
+  width: auto;
+  font-size: 14pt;
+  padding: 6px;
+  background-color: white;
+  border-radius: 5px;
+}
