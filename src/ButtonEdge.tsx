@@ -9,6 +9,7 @@ import {
     MarkerType,
     type EdgeProps,
 } from "@xyflow/react";
+import ArrowFactory from "./ArrowFactory";
 
 const markers = {
    arrow:       MarkerType.Arrow,
@@ -38,7 +39,10 @@ export default function CustomEdge(props: EdgeProps) {
     if (!isEditing) {
       return (
           <>
-              <BaseEdge path={edgePath} {...props} />
+			 {ArrowFactory.CoolSquare()}
+			 {ArrowFactory.Connector()}
+			 {ArrowFactory.Arrow()}
+              <BaseEdge path={edgePath} {...props} markerStart="url(#logo)" markerEnd="url(#arrow)"/>
               <EdgeLabelRenderer>
                   <div
                       className="button-edge__label nodrag nopan"
@@ -59,7 +63,7 @@ export default function CustomEdge(props: EdgeProps) {
     } else {
       return (
           <>
-            <BaseEdge path={edgePath} {...props} />
+            <BaseEdge path={edgePath} {...props}/>
             <EdgeLabelRenderer>
                 <div
                     className="button-edge__label nodrag nopan"
