@@ -1,14 +1,18 @@
 import React from "react";
 import ClassDiagram from "./ClassDiagram";
 import SideMenu from "./SideMenu";
+import Arrows from "./Arrows";
 
 import "./ClassDiagram.css";
 
 function App() {
     return (
-        <div style={{ width: "100%", height: "100vh" }}>
-            <ClassDiagram />
-        </div>
+        <>
+            {Arrows}
+            <div style={{ width: "100%", height: "100vh" }}>
+                <ClassDiagram />
+            </div>
+        </>
     );
 }
 
