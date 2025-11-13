@@ -3,6 +3,8 @@ import ClassDiagram from "./ClassDiagram";
 import SideMenu from "./SideMenu";
 import Arrows from "./Arrows";
 
+import "./ClassDiagram.css";
+
 function App() {
     return (
 		  <>

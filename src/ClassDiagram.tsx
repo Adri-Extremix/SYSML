@@ -1,4 +1,6 @@
 import { useCallback, useState } from "react";
+import "./ClassDiagram.css";
+
 import {
     type Node,
     type Edge,
@@ -9,6 +11,7 @@ import {
     useNodesState,
     useEdgesState,
     addEdge,
+    ConnectionMode,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -54,22 +57,35 @@ export default function ClassDiagram() {
     const [closeEditingSignal, setCloseEditingSignal] = useState(0);
     const [idCounter, setIdCounter] = useState(3);
     // Estado inicial de nodos en la edicion
-    const [nodes, setNodes, onNodesChange] = useNodesState(
-        initialNodes.map(node => ({
-            ...node,
-            data: {
-                ...node.data,
-                closeEditingSignal,
-            },
-        })),
-    );
+    const [initial_nodes, setNodes, onNodesChange] =
+        useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+    const nodes = initial_nodes.map(n => ({
+        ...n,
+        data: {
+            ...n.data,
+            closeEditingSignal,
+        },
+    }));
+
     const onConnect = useCallback(
-        (params: any) =>
+        (params: any) => {
+            if (params.source === params.target) return;
+
             setEdges(eds => {
-                return addEdge(params, eds);
-            }),
+                const filteredEdges = eds.filter(
+                    edge =>
+                        !(
+                            (edge.source === params.source &&
+                                edge.target === params.target) ||
+                            (edge.source === params.target &&
+                                edge.target === params.source)
+                        ),
+                );
+                return addEdge(params, filteredEdges);
+            });
+        },
         [setEdges],
     );
 
@@ -124,61 +140,15 @@ export default function ClassDiagram() {
     return (
         <div style={{ width: "100%", height: "100vh", position: "relative" }}>
             {/* Botón para añadir clases */}
-            <button
-                onClick={saveFigure}
-                style={{
-                    position: "absolute",
-                    zIndex: 10,
-                    top: 10,
-                    left: 130,
-                    padding: "8px 12px",
-                    backgroundColor: "#f44336",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                }}
-            >
+            <button className="save-button" onClick={saveFigure}>
                 💾 Guardar Diagrama
             </button>
             <SideMenu addNode={addClassNode} />
 
             {/* Botón para borrar todo */}
-            <button
-                onClick={clearAll}
-                style={{
-                    position: "absolute",
-                    zIndex: 10,
-                    top: 10,
-                    right: 10,
-                    padding: "8px 12px",
-                    backgroundColor: "#f44336",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                }}
-            >
+            <button className="delete-button" onClick={clearAll}>
                 🗑 Borrar Todo
             </button>
-
-            {/* Instrucciones */}
-            <div
-                style={{
-                    position: "absolute",
-                    zIndex: 10,
-                    top: 50,
-                    right: 10,
-                    backgroundColor: "white",
-                    border: "1px solid #333",
-                    borderRadius: "6px",
-                    padding: "8px",
-                    fontSize: "12px",
-                    boxShadow: "0px 0px 10px rgba(0,0,0,0.2)",
-                }}
-            >
-                💡 Haz <strong>doble clic</strong> en una clase para editarla
-            </div>
 
             <ReactFlow
                 nodes={nodes}
@@ -188,6 +158,7 @@ export default function ClassDiagram() {
                 onConnect={onConnect}
                 nodeTypes={nodeTypes}
                 edgeTypes={edgeTypes}
+                connectionMode={ConnectionMode.Loose}
                 fitView
                 onPaneClick={() => setCloseEditingSignal(s => s + 1)} // Cierra edición al clicar en el fondo
             >

@@ -14,28 +14,7 @@ import ListItemText from "@mui/material/ListItemText";
 import CropLandscapeRoundedIcon from "@mui/icons-material/CropLandscapeRounded";
 import CropLandscapeSharpIcon from "@mui/icons-material/CropLandscapeSharp";
 
-const drawerWidth = 400;
-
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: prop => prop !== "open",
-})(({ theme }) => ({
-    transition: theme.transitions.create(["margin", "width"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    variants: [
-        {
-            style: {
-                width: `calc(100% - ${drawerWidth}px)`,
-                marginLeft: `${drawerWidth}px`,
-                transition: theme.transitions.create(["margin", "width"], {
-                    easing: theme.transitions.easing.easeOut,
-                    duration: theme.transitions.duration.enteringScreen,
-                }),
-            },
-        },
-    ],
-}));
+const drawerWidth = 320;
 
 const DrawerHeader = styled("div")(({ theme }) => ({
     display: "block",
@@ -45,8 +24,22 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function SideMenu({ addNode }) {
-    const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+
+    React.useEffect(() => {
+        // Aplicar margin-left al body para que el drawer empuje la interfaz
+        const prevTransition = document.body.style.transition;
+        document.body.style.transition = "margin-left 225ms ease";
+        if (open) {
+            document.body.style.marginLeft = `${drawerWidth}px`;
+        } else {
+            document.body.style.marginLeft = "";
+        }
+        return () => {
+            document.body.style.marginLeft = "";
+            document.body.style.transition = prevTransition;
+        };
+    }, [open]);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -66,22 +59,11 @@ export default function SideMenu({ addNode }) {
 
     return (
         <Box sx={{ display: "flex" }}>
-            <button
-                onClick={handleDrawerOpen}
-                style={{
-                    position: "absolute",
-                    zIndex: 999,
-                    top: 10,
-                    left: 10,
-                    width: "auto",
-                    fontSize: "14pt",
-                    padding: 6,
-                    backgroundColor: "white",
-                    borderRadius: 5,
-                }}
-            >
-                Añadir clase
-            </button>
+            {!open && (
+                <button onClick={handleDrawerOpen} className="add-class">
+                    Añadir clase
+                </button>
+            )}
 
             <Drawer
                 sx={{
@@ -107,9 +89,12 @@ export default function SideMenu({ addNode }) {
                         <ListItem
                             key={text}
                             disablePadding
-                            onClick={() => addNode(type)}
+                            onClick={() => {
+                                addNode(type);
+                                setOpen(false);
+                            }}
                         >
-                            <ListItemButton>
+                            <ListItemButton divider="true">
                                 <ListItemIcon>{icon}</ListItemIcon>
                                 <ListItemText primary={text} />
                             </ListItemButton>
