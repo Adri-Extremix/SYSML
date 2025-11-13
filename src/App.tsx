@@ -7,12 +7,12 @@ import "./ClassDiagram.css";
 
 function App() {
     return (
-		  <>
-		     {Arrows}
-           <div style={{ width: "100%", height: "100vh" }}>
-               <ClassDiagram />
-           </div>
-		  </>
+        <>
+            {Arrows}
+            <div style={{ width: "100%", height: "100vh" }}>
+                <ClassDiagram />
+            </div>
+        </>
     );
 }
 
