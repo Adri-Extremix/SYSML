@@ -1,82 +1,45 @@
-/*
-import { SVGProps } from 'react' 
-type SVG = SVGProps<SVGSVGElement>
-
-type ArrowMaker = (n : string, w : number, h : number, t : string) => SVG;
-
-function min (lhs : number, rhs : number) : number {
-   return lhs < rhs ? lhs : rhs;
-}
-
-function makeUnownedMembership (n : string, w : number, h : number, t : string) : SVG {
-   // Membership unowned, page 26:    -----O
-   const r : number = min(w, h) / 4
-   return (
-      <marker
-         id           = {n}
-         viewBox      = {`0 0 ${w} ${h}`}
-         markerHeight = {h / 2}
-         markerWidth  = {w / 2}
-         refX         = {h / 2}
-         refY         = {w / 2}
-      >
-         <circle
-           r            = {r}
-           cx           = {w / 2}
-           cy           = {h / 2}
-           fill         = "white"
-           stroke       = "black"
-           stroke-width = "2"
-           transform    = {t}
-         />
-      </marker>);
-}
-
-function makeOwnedMembership (n : string, w : number, h : number, t : string) : SVG {
-   // Membership owned member, page 26: -------⊕
-   const r : number = min(w, h) / 4
-   return (
-      <marker
-         id           = {n}
-         viewBox      = {`0 0 ${w} ${h}`}
-         markerHeight = {h / 2}
-         markerWidth  = {w / 2}
-         refX         = {h / 2}
-         refY         = {w / 2}
-      >
-         <circle
-           r            = {r}
-           cx           = {w / 2}
-           cy           = {h / 2}
-           fill         = "white"
-           stroke       = "black"
-           stroke-width = "2"
-           transform    = {t}
-         />
-         <line
-            x1           = {w / 2}
-            y1           = {h * 1 / 4}
-            x2           = {w / 2}
-            y2           = {h * 3 / 4}
-            stroke       = "black"
-            stroke-width = "2"
-         />
-         <line
-            x1           = {w * 1 / 4}
-            y1           = {h / 2}
-            x2           = {w * 3 / 4}
-            y2           = {h / 2}
-            stroke       = "black"
-            stroke-width = "2"
-         />
-      </marker>);
-}
-
-*/
-
 const Arrows = (
 <svg style={{ position: "absolute", top: 0, left: 0 }}>
    <defs>
+      // None
+      <marker
+         id           = "Arrow::None"
+         viewBox      = "0 0 40 40"
+         markerHeight = "20"
+         markerWidth  = "20"
+         refX         = "20"
+         refY         = "20"
+      >
+		</marker>
+
+      // Association, page ?:  TODO
+      <marker
+         id           = "Arrow::Association"
+         viewBox      = "0 0 40 40"
+         markerHeight = "20"
+         markerWidth  = "20"
+         refX         = "20"
+         refY         = "20"
+		   orient       = "auto-start-reverse"
+      >
+         <line
+            x1           = "10"
+            y1           = "10"
+            x2           = "30"
+            y2           = "20"
+            stroke       = "black"
+            strokeWidth = "2"
+         />
+         <line
+            x1           = "30"
+            y1           = "20"
+            x2           = "10"
+            y2           = "30"
+            stroke       = "black"
+            strokeWidth = "2"
+         />
+      </marker>
+
       // Membership unowned, page 26:    -----O
       <marker
          id           = "Arrow::OwnedMembership"
@@ -92,7 +55,7 @@ const Arrows = (
            cy           = "20"
            fill         = "white"
            stroke       = "black"
-           stroke-width = "2"
+           strokeWidth = "2"
          />
       </marker>
 
@@ -111,7 +74,7 @@ const Arrows = (
            cy           = "20"
            fill         = "white"
            stroke       = "black"
-           stroke-width = "2"
+           strokeWidth = "2"
          />
          <line
             x1           = "20"
@@ -119,7 +82,7 @@ const Arrows = (
             x2           = "20"
             y2           = "30"
             stroke       = "black"
-            stroke-width = "2"
+            strokeWidth = "2"
          />
          <line
             x1           = "10"
@@ -127,7 +90,7 @@ const Arrows = (
             x2           = "30"
             y2           = "20"
             stroke       = "black"
-            stroke-width = "2"
+            strokeWidth = "2"
          />
       </marker>
 
@@ -145,7 +108,7 @@ const Arrows = (
          <polygon
             fill         = "white"
             stroke       = "black"
-            stroke-width = "2"
+            strokeWidth = "2"
             points       = "
                10,30,
                10,10
@@ -168,7 +131,7 @@ const Arrows = (
          <polygon
             fill         = "white"
             stroke       = "black"
-            stroke-width = "2"
+            strokeWidth = "2"
             points       = "
                10,30,
                10,10
@@ -203,7 +166,7 @@ const Arrows = (
          <polygon
             fill         = "white"
             stroke       = "black"
-            stroke-width = "2"
+            strokeWidth = "2"
             points       = "
                10,30,
                10,10
@@ -215,7 +178,7 @@ const Arrows = (
             y1   = "8"
             x2   = "4"
             y2   = "32"
-            stroke-width = "2"
+            strokeWidth = "2"
             stroke       = "black"
             fill = "black"
          />
@@ -235,7 +198,7 @@ const Arrows = (
          <polygon
             fill         = "white"
             stroke       = "black"
-            stroke-width = "2"
+            strokeWidth = "2"
             points       = "
                10,30,
                10,10
@@ -282,7 +245,7 @@ const Arrows = (
          <polygon
             fill         = "white"
             stroke       = "black"
-            stroke-width = "2"
+            strokeWidth = "2"
             points       = "
                5,20,
                20,30
@@ -307,7 +270,7 @@ const Arrows = (
          <polygon
             fill         = "black"
             stroke       = "black"
-            stroke-width = "2"
+            strokeWidth = "2"
             points       = "
                5,20,
                20,30
@@ -319,20 +282,20 @@ const Arrows = (
       </marker>
 
       /* Time Slice, page 51: -------▷ */
-
+		  // TODO
       <marker
-         id           = "Arrow::Aggregation"
+         id           = "Arrow::TimeSlice"
          viewBox      = "0 0 40 40"
          markerHeight = {20}
          markerWidth  = {20}
          refX         = {20}
          refY         = {20}
-	 orient="auto-start-reverse"
+		   orient="auto-start-reverse"
       >
          <polygon
             fill         = "black"
             stroke       = "black"
-            stroke-width = "2"
+            strokeWidth = "2"
             points       = "
                5,20,
                20,30
