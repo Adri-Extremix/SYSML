@@ -26,6 +26,21 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function SideMenu({ addNode }) {
     const [open, setOpen] = React.useState(false);
 
+    React.useEffect(() => {
+        // Aplicar margin-left al body para que el drawer empuje la interfaz
+        const prevTransition = document.body.style.transition;
+        document.body.style.transition = "margin-left 225ms ease";
+        if (open) {
+            document.body.style.marginLeft = `${drawerWidth}px`;
+        } else {
+            document.body.style.marginLeft = "";
+        }
+        return () => {
+            document.body.style.marginLeft = "";
+            document.body.style.transition = prevTransition;
+        };
+    }, [open]);
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -44,22 +59,23 @@ export default function SideMenu({ addNode }) {
 
     return (
         <Box sx={{ display: "flex" }}>
-            <button
-                onClick={handleDrawerOpen}
-                style={{
-                    position: "absolute",
-                    zIndex: 999,
-                    top: 10,
-                    left: 10,
-                    width: "auto",
-                    fontSize: "14pt",
-                    padding: 6,
-                    backgroundColor: "white",
-                    borderRadius: 5,
-                }}
-            >
-                Añadir clase
-            </button>
+            {!open && (
+                <button
+                    onClick={handleDrawerOpen}
+                    style={{
+                        position: "relative",
+                        zIndex: 999,
+                        margin: 10,
+                        width: "auto",
+                        fontSize: "14pt",
+                        padding: 6,
+                        backgroundColor: "white",
+                        borderRadius: 5,
+                    }}
+                >
+                    Añadir clase
+                </button>
+            )}
 
             <Drawer
                 sx={{
@@ -85,7 +101,10 @@ export default function SideMenu({ addNode }) {
                         <ListItem
                             key={text}
                             disablePadding
-                            onClick={() => addNode(type)}
+                            onClick={() => {
+                                addNode(type);
+                                setOpen(false);
+                            }}
                         >
                             <ListItemButton>
                                 <ListItemIcon>{icon}</ListItemIcon>
