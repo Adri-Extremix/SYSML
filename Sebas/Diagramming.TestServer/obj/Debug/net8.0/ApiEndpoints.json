@@ -1,0 +1,12 @@
+[
+  {
+    "ContainingType": "Diagramming.TestServer.Controllers.DiagramController",
+    "Method": "GetDiagram",
+    "RelativePath": "api/Diagram",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

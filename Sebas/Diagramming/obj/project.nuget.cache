@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "0wcQZ5Ol7qw=",
+  "success": true,
+  "projectFilePath": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming\\Diagramming.csproj",
+  "expectedPackageFiles": [
+    "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

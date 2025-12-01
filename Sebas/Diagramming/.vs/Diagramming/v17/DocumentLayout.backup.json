@@ -1,0 +1,116 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{17679F45-3B5A-4DBA-854E-68A418DCFF2B}|..\\Diagramming.TestServer\\Diagramming.TestServer.csproj|d:\\ses repos\\trunk\\diagramming\\diagramming.testserver\\controllers\\diagramcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{17679F45-3B5A-4DBA-854E-68A418DCFF2B}|..\\Diagramming.TestServer\\Diagramming.TestServer.csproj|d:\\ses repos\\trunk\\diagramming\\diagramming.testserver\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{17679F45-3B5A-4DBA-854E-68A418DCFF2B}|..\\Diagramming.TestServer\\Diagramming.TestServer.csproj|d:\\ses repos\\trunk\\diagramming\\diagramming.testserver\\diagramexamples\\carpartssysmlv2.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{17679F45-3B5A-4DBA-854E-68A418DCFF2B}|..\\Diagramming.TestServer\\Diagramming.TestServer.csproj|d:\\ses repos\\trunk\\diagramming\\diagramming.testserver\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{17679F45-3B5A-4DBA-854E-68A418DCFF2B}|..\\Diagramming.TestServer\\Diagramming.TestServer.csproj|d:\\ses repos\\trunk\\diagramming\\diagramming.testserver\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{17679F45-3B5A-4DBA-854E-68A418DCFF2B}|..\\Diagramming.TestServer\\Diagramming.TestServer.csproj|d:\\ses repos\\trunk\\diagramming\\diagramming.testserver\\diagramming.testserver.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\appsettings.json",
+              "RelativeDocumentMoniker": "..\\Diagramming.TestServer\\appsettings.json",
+              "ToolTip": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\appsettings.json",
+              "RelativeToolTip": "..\\Diagramming.TestServer\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-11-27T14:23:59.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Diagramming.TestServer.http",
+              "DocumentMoniker": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\Diagramming.TestServer.http",
+              "RelativeDocumentMoniker": "..\\Diagramming.TestServer\\Diagramming.TestServer.http",
+              "ToolTip": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\Diagramming.TestServer.http",
+              "RelativeToolTip": "..\\Diagramming.TestServer\\Diagramming.TestServer.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-11-27T14:23:00.57Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "..\\Diagramming.TestServer\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\Properties\\launchSettings.json",
+              "RelativeToolTip": "..\\Diagramming.TestServer\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-11-27T14:22:46.082Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\Program.cs",
+              "RelativeDocumentMoniker": "..\\Diagramming.TestServer\\Program.cs",
+              "ToolTip": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\Program.cs",
+              "RelativeToolTip": "..\\Diagramming.TestServer\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T14:19:45.505Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CarPartssysmlv2.json",
+              "DocumentMoniker": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\DiagramExamples\\CarPartssysmlv2.json",
+              "RelativeDocumentMoniker": "..\\Diagramming.TestServer\\DiagramExamples\\CarPartssysmlv2.json",
+              "ToolTip": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\DiagramExamples\\CarPartssysmlv2.json",
+              "RelativeToolTip": "..\\Diagramming.TestServer\\DiagramExamples\\CarPartssysmlv2.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-11-27T14:11:36.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DiagramController.cs",
+              "DocumentMoniker": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\Controllers\\DiagramController.cs",
+              "RelativeDocumentMoniker": "..\\Diagramming.TestServer\\Controllers\\DiagramController.cs",
+              "ToolTip": "D:\\SES REPOS\\trunk\\Diagramming\\Diagramming.TestServer\\Controllers\\DiagramController.cs",
+              "RelativeToolTip": "..\\Diagramming.TestServer\\Controllers\\DiagramController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAwCYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T14:10:43.31Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

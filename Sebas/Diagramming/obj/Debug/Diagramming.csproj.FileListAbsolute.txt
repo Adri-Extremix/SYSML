@@ -1,0 +1,10 @@
+D:\SES REPOS\trunk\Diagramming\Diagramming\obj\Debug\Diagramming.csproj.AssemblyReference.cache
+D:\SES REPOS\trunk\Diagramming\Diagramming\obj\Debug\Diagramming.GeneratedMSBuildEditorConfig.editorconfig
+D:\SES REPOS\trunk\Diagramming\Diagramming\obj\Debug\Diagramming.AssemblyInfoInputs.cache
+D:\SES REPOS\trunk\Diagramming\Diagramming\obj\Debug\Diagramming.AssemblyInfo.cs
+D:\SES REPOS\trunk\Diagramming\Diagramming\obj\Debug\Diagramming.csproj.CoreCompileInputs.cache
+D:\SES REPOS\trunk\lac\Diagramming.deps.json
+D:\SES REPOS\trunk\lac\Diagramming.dll
+D:\SES REPOS\trunk\lac\Diagramming.pdb
+D:\SES REPOS\trunk\Diagramming\Diagramming\obj\Debug\Diagramming.dll
+D:\SES REPOS\trunk\Diagramming\Diagramming\obj\Debug\Diagramming.pdb

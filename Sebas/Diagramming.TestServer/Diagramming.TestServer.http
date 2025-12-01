@@ -1,0 +1,6 @@
+@Diagramming.TestServer_HostAddress = http://localhost:5171
+
+GET {{Diagramming.TestServer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
