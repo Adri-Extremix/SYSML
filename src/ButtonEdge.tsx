@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     BaseEdge,
     EdgeLabelRenderer,
@@ -36,9 +36,13 @@ let items = Object.values(markers).map(x => (
 
 export default function CustomEdge(props: EdgeProps) {
     const [isEditing, setIsEditing] = useState(false);
-    const [label, setLabel] = useState("");
-    const [markerStart, setMarkerStart] = useState(markers.none);
-    const [markerEnd, setMarkerEnd] = useState(markers.association);
+    const [label, setLabel] = useState(props.data?.label || "");
+    const [markerStart, setMarkerStart] = useState<string>(
+        props.data?.markerStart || markers.none,
+    );
+    const [markerEnd, setMarkerEnd] = useState<string>(
+        props.data?.markerEnd || markers.association,
+    );
     const [edgePath, labelX, labelY] = getBezierPath(props);
 
     const { setEdges } = useReactFlow();
@@ -61,6 +65,25 @@ export default function CustomEdge(props: EdgeProps) {
     const handleSetMarkerEnd = (event: SelectChangeEvent) => {
         setMarkerEnd(event.target.value as string);
     };
+
+    // Persist marker and label changes to the edge object so exports include them
+    useEffect(() => {
+        setEdges(eds =>
+            eds.map(e =>
+                e.id === props.id
+                    ? {
+                          ...e,
+                          data: {
+                              ...(e.data ?? {}),
+                              markerStart,
+                              markerEnd,
+                              label,
+                          },
+                      }
+                    : e,
+            ),
+        );
+    }, [markerStart, markerEnd, label, props.id, setEdges]);
 
     if (!isEditing) {
         return (

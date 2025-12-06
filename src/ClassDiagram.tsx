@@ -111,6 +111,22 @@ export default function ClassDiagram() {
     };
 
     const saveFigure = () => {
+        // Ensure edges exported include markerStart/markerEnd (from edge.data if present)
+        const exportEdges = edges.map(e => {
+            const markerStart = (e.data && (e.data as any).markerStart) ?? "";
+            const markerEnd = (e.data && (e.data as any).markerEnd) ?? "";
+            const label = (e.data && (e.data as any).label) ?? (e.label ?? "");
+            return {
+                ...e,
+                data: {
+                    ...(e.data ?? {}),
+                    markerStart,
+                    markerEnd,
+                    label,
+                },
+            };
+        });
+
         const figure = {
             nodes: nodes.map(({ id, data, position }) => ({
                 id,
@@ -119,8 +135,9 @@ export default function ClassDiagram() {
                 methods: data.methods,
                 position,
             })),
-            edges,
+            edges: exportEdges,
         };
+
         const figureJSON = JSON.stringify(figure, null, 2);
         const blob = new Blob([figureJSON], { type: "application/json" });
         const url = URL.createObjectURL(blob);
