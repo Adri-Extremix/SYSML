@@ -26,6 +26,7 @@ import ButtonEdge from "./ButtonEdge";
 const nodeTypes = { classNode: ClassNode };
 const edgeTypes = { default: ButtonEdge };
 
+// 1. ACTUALIZADO: Los nodos iniciales ahora usan la estructura de compartimentos
 const initialNodes: Node<NodeData>[] = [
     {
         id: "1",
@@ -33,9 +34,19 @@ const initialNodes: Node<NodeData>[] = [
         position: { x: 100, y: 100 },
         data: {
             label: "Usuario",
-            attributes: ["+id: number", "+nombre: string"],
-            methods: ["login", "logout"],
             type: NodeType.squared,
+            compartments: [
+                {
+                    id: "c1",
+                    label: "attributes",
+                    items: ["+id: number", "+nombre: string"]
+                },
+                {
+                    id: "c2",
+                    label: "operations",
+                    items: ["login()", "logout()"]
+                }
+            ]
         },
     },
     {
@@ -44,9 +55,19 @@ const initialNodes: Node<NodeData>[] = [
         position: { x: 400, y: 200 },
         data: {
             label: "Producto",
-            attributes: ["+id: number", "+precio: float"],
-            methods: ["calcularIVA"],
             type: NodeType.rounded,
+            compartments: [
+                {
+                    id: "c1",
+                    label: "attributes",
+                    items: ["+id: number", "+precio: float"]
+                },
+                {
+                    id: "c2",
+                    label: "operations",
+                    items: ["calcularIVA()"]
+                }
+            ]
         },
     },
 ];
@@ -56,11 +77,12 @@ const initialEdges: Edge[] = [{ id: "e1-2", source: "1", target: "2" }];
 export default function ClassDiagram() {
     const [closeEditingSignal, setCloseEditingSignal] = useState(0);
     const [idCounter, setIdCounter] = useState(3);
-    // Estado inicial de nodos en la edicion
-    const [initial_nodes, setNodes, onNodesChange] =
-        useNodesState(initialNodes);
+    
+    // Estado inicial de nodos
+    const [initial_nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+    // Inyectar la señal de cierre en los nodos
     const nodes = initial_nodes.map(n => ({
         ...n,
         data: {
@@ -77,10 +99,8 @@ export default function ClassDiagram() {
                 const filteredEdges = eds.filter(
                     edge =>
                         !(
-                            (edge.source === params.source &&
-                                edge.target === params.target) ||
-                            (edge.source === params.target &&
-                                edge.target === params.source)
+                            (edge.source === params.source && edge.target === params.target) ||
+                            (edge.source === params.target && edge.target === params.source)
                         ),
                 );
                 return addEdge(params, filteredEdges);
@@ -100,8 +120,8 @@ export default function ClassDiagram() {
             },
             data: {
                 label: `Clase${idCounter}`,
-                attributes: [],
-                methods: [],
+                // 2. ACTUALIZADO: Inicializamos compartments vacío
+                compartments: [], 
                 type: typeOfNode,
                 closeEditingSignal,
             },
@@ -127,12 +147,13 @@ export default function ClassDiagram() {
             };
         });
 
+        // 3. ACTUALIZADO: Guardamos la propiedad 'compartments'
         const figure = {
             nodes: nodes.map(({ id, data, position }) => ({
                 id,
                 label: data.label,
-                attributes: data.attributes,
-                methods: data.methods,
+                compartments: data.compartments, // Aquí estaba el error, antes ponía attributes/methods
+                type: data.type, // Es útil guardar el tipo (rounded/squared)
                 position,
             })),
             edges: exportEdges,
