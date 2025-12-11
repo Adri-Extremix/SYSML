@@ -39,14 +39,14 @@ const initialNodes: Node<NodeData>[] = [
                 {
                     id: "c1",
                     label: "attributes",
-                    items: ["+id: number", "+nombre: string"]
+                    items: ["+id: number", "+nombre: string"],
                 },
                 {
                     id: "c2",
                     label: "operations",
-                    items: ["login()", "logout()"]
-                }
-            ]
+                    items: ["login()", "logout()"],
+                },
+            ],
         },
     },
     {
@@ -60,14 +60,14 @@ const initialNodes: Node<NodeData>[] = [
                 {
                     id: "c1",
                     label: "attributes",
-                    items: ["+id: number", "+precio: float"]
+                    items: ["+id: number", "+precio: float"],
                 },
                 {
                     id: "c2",
                     label: "operations",
-                    items: ["calcularIVA()"]
-                }
-            ]
+                    items: ["calcularIVA()"],
+                },
+            ],
         },
     },
 ];
@@ -77,9 +77,10 @@ const initialEdges: Edge[] = [{ id: "e1-2", source: "1", target: "2" }];
 export default function ClassDiagram() {
     const [closeEditingSignal, setCloseEditingSignal] = useState(0);
     const [idCounter, setIdCounter] = useState(3);
-    
+
     // Estado inicial de nodos
-    const [initial_nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [initial_nodes, setNodes, onNodesChange] =
+        useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
     // Inyectar la señal de cierre en los nodos
@@ -99,8 +100,10 @@ export default function ClassDiagram() {
                 const filteredEdges = eds.filter(
                     edge =>
                         !(
-                            (edge.source === params.source && edge.target === params.target) ||
-                            (edge.source === params.target && edge.target === params.source)
+                            (edge.source === params.source &&
+                                edge.target === params.target) ||
+                            (edge.source === params.target &&
+                                edge.target === params.source)
                         ),
                 );
                 return addEdge(params, filteredEdges);
@@ -121,7 +124,7 @@ export default function ClassDiagram() {
             data: {
                 label: `Clase${idCounter}`,
                 // 2. ACTUALIZADO: Inicializamos compartments vacío
-                compartments: [], 
+                compartments: [],
                 type: typeOfNode,
                 closeEditingSignal,
             },
@@ -135,7 +138,7 @@ export default function ClassDiagram() {
         const exportEdges = edges.map(e => {
             const markerStart = (e.data && (e.data as any).markerStart) ?? "";
             const markerEnd = (e.data && (e.data as any).markerEnd) ?? "";
-            const label = (e.data && (e.data as any).label) ?? (e.label ?? "");
+            const label = (e.data && (e.data as any).label) ?? e.label ?? "";
             return {
                 ...e,
                 data: {
