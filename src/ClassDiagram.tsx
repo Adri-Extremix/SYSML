@@ -1,9 +1,5 @@
-import { useCallback, useState } from "react";
-import "./ClassDiagram.css";
-
+import { useCallback, useState, useEffect } from "react";
 import {
-    type Node,
-    type Edge,
     ReactFlow,
     MiniMap,
     Controls,
@@ -12,89 +8,154 @@ import {
     useEdgesState,
     addEdge,
     ConnectionMode,
+    type Node,
+    type Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-
-import SideMenu from "./SideMenu";
-import ClassNode, {
-    type NodeData,
-    type CustomNode,
-    NodeType,
-} from "./ClassNode";
+import ClassNode from "./ClassNode";
 import ButtonEdge from "./ButtonEdge";
+import SideMenu from "./SideMenu";
+import { getDiagram, type DiagramData, type NodeData } from "./api";
 
 const nodeTypes = { classNode: ClassNode };
 const edgeTypes = { default: ButtonEdge };
 
-// 1. ACTUALIZADO: Los nodos iniciales ahora usan la estructura de compartimentos
-const initialNodes: Node<NodeData>[] = [
-    {
-        id: "1",
-        type: "classNode",
-        position: { x: 100, y: 100 },
-        data: {
-            label: "Usuario",
-            type: NodeType.squared,
-            compartments: [
-                {
-                    id: "c1",
-                    label: "attributes",
-                    items: ["+id: number", "+nombre: string"],
-                },
-                {
-                    id: "c2",
-                    label: "operations",
-                    items: ["login()", "logout()"],
-                },
-            ],
-        },
-    },
-    {
-        id: "2",
-        type: "classNode",
-        position: { x: 400, y: 200 },
-        data: {
-            label: "Producto",
-            type: NodeType.rounded,
-            compartments: [
-                {
-                    id: "c1",
-                    label: "attributes",
-                    items: ["+id: number", "+precio: float"],
-                },
-                {
-                    id: "c2",
-                    label: "operations",
-                    items: ["calcularIVA()"],
-                },
-            ],
-        },
-    },
-];
+// Función para calcular posiciones automáticas si todas son (0,0)
+function calculateAutoPositions(
+    nodes: NodeData[],
+    edges: DiagramData["edges"],
+): NodeData[] {
+    // Si todos los nodos tienen posición (0,0), calcular automáticamente
+    const allZero = nodes.every(n => n.position.x === 0 && n.position.y === 0);
 
-const initialEdges: Edge[] = [{ id: "e1-2", source: "1", target: "2" }];
+    if (!allZero) {
+        return nodes;
+    }
+
+    // Encontrar nodo raíz (el que no es target de ningún edge)
+    const targetIds = new Set(edges.map(e => e.target));
+    const rootNodes = nodes.filter(n => !targetIds.has(n.id));
+
+    // Crear mapa de hijos
+    const childrenMap = new Map<string, string[]>();
+    edges.forEach(edge => {
+        if (!childrenMap.has(edge.source)) {
+            childrenMap.set(edge.source, []);
+        }
+        childrenMap.get(edge.source)!.push(edge.target);
+    });
+
+    // Asignar posiciones en forma de árbol
+    const positionedNodes = new Map<string, { x: number; y: number }>();
+    const HORIZONTAL_SPACING = 200;
+    const VERTICAL_SPACING = 150;
+
+    function positionNode(
+        nodeId: string,
+        x: number,
+        y: number,
+        level: number,
+    ): number {
+        const children = childrenMap.get(nodeId) || [];
+
+        if (children.length === 0) {
+            positionedNodes.set(nodeId, { x, y });
+            return x + HORIZONTAL_SPACING;
+        }
+
+        let currentX = x;
+        children.forEach(childId => {
+            currentX = positionNode(
+                childId,
+                currentX,
+                y + VERTICAL_SPACING,
+                level + 1,
+            );
+        });
+
+        // Centrar el nodo padre sobre sus hijos
+        const firstChild = positionedNodes.get(children[0])!;
+        const lastChild = positionedNodes.get(children[children.length - 1])!;
+        const centerX = (firstChild.x + lastChild.x) / 2;
+
+        positionedNodes.set(nodeId, { x: centerX, y });
+
+        return currentX;
+    }
+
+    // Posicionar desde los nodos raíz
+    let startX = 0;
+    rootNodes.forEach(root => {
+        startX = positionNode(root.id, startX, 0, 0);
+    });
+
+    // Aplicar posiciones calculadas
+    return nodes.map(node => ({
+        ...node,
+        position: positionedNodes.get(node.id) || { x: 0, y: 0 },
+    }));
+}
 
 export default function ClassDiagram() {
+    const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
     const [closeEditingSignal, setCloseEditingSignal] = useState(0);
-    const [idCounter, setIdCounter] = useState(3);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Estado inicial de nodos
-    const [initial_nodes, setNodes, onNodesChange] =
-        useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    // Cargar diagrama del servidor al montar el componente
+    useEffect(() => {
+        async function loadDiagram() {
+            try {
+                setLoading(true);
+                setError(null);
+                const data = await getDiagram();
 
-    // Inyectar la señal de cierre en los nodos
-    const nodes = initial_nodes.map(n => ({
-        ...n,
-        data: {
-            ...n.data,
-            closeEditingSignal,
-        },
-    }));
+                // Calcular posiciones si son todas (0,0)
+                const positionedNodes = calculateAutoPositions(
+                    data.nodes,
+                    data.edges,
+                );
+
+                // Transformar los nodos del servidor al formato de ReactFlow
+                const loadedNodes: Node[] = positionedNodes.map(node => ({
+                    id: node.id,
+                    type: "classNode",
+                    position: node.position,
+                    data: {
+                        label: node.label,
+                        attributes: node.attributes || [],
+                        methods: [],
+                        type: "squared",
+                        closeEditingSignal: 0,
+                    },
+                }));
+
+                // Transformar los edges del servidor al formato de ReactFlow
+                const loadedEdges: Edge[] = data.edges.map(edge => ({
+                    id: edge.id,
+                    source: edge.source,
+                    target: edge.target,
+                }));
+
+                setNodes(loadedNodes);
+                setEdges(loadedEdges);
+            } catch (err) {
+                console.error("Error cargando diagrama:", err);
+                setError("No se pudo cargar el diagrama del servidor");
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadDiagram();
+    }, [setNodes, setEdges]);
 
     const onConnect = useCallback(
         (params: any) => {
-            if (params.source === params.target) return;
+            if (params.source === params.target) {
+                return;
+            }
 
             setEdges(eds => {
                 const filteredEdges = eds.filter(
@@ -112,26 +173,42 @@ export default function ClassDiagram() {
         [setEdges],
     );
 
-    const addClassNode = (typeOfNode: NodeType) => {
-        const newId = `${idCounter}`;
-        const newNode: CustomNode = {
-            id: newId,
-            type: "classNode",
-            position: {
-                x: Math.random() * 400 + 50,
-                y: Math.random() * 300 + 50,
-            },
-            data: {
-                label: `Clase${idCounter}`,
-                // 2. ACTUALIZADO: Inicializamos compartments vacío
-                compartments: [],
-                type: typeOfNode,
-                closeEditingSignal,
-            },
-        };
-        setNodes(nds => [...nds, newNode]);
-        setIdCounter(prev => prev + 1);
-    };
+    const addClassNode = useCallback(
+        (type: string) => {
+            const newId = `${Date.now()}`;
+            const newNode: Node = {
+                id: newId,
+                type: "classNode",
+                position: { x: Math.random() * 400, y: Math.random() * 400 },
+                data: {
+                    label: "Nueva Clase",
+                    attributes: [],
+                    methods: [],
+                    compartments: [],
+                    type: type,
+                    closeEditingSignal: closeEditingSignal,
+                    onChange: (newData: any) => {
+                        setNodes(nds =>
+                            nds.map(n =>
+                                n.id === newId
+                                    ? {
+                                        ...n,
+                                        data: {
+                                            ...n.data,
+                                            ...newData,
+                                            onChange: n.data.onChange,
+                                        },
+                                    }
+                                    : n,
+                            ),
+                        );
+                    },
+                },
+            };
+            setNodes(nds => [...nds, newNode]);
+        },
+        [setNodes, closeEditingSignal],
+    );
 
     const saveFigure = () => {
         // Ensure edges exported include markerStart/markerEnd (from edge.data if present)
@@ -150,13 +227,12 @@ export default function ClassDiagram() {
             };
         });
 
-        // 3. ACTUALIZADO: Guardamos la propiedad 'compartments'
         const figure = {
             nodes: nodes.map(({ id, data, position }) => ({
                 id,
                 label: data.label,
-                compartments: data.compartments, // Aquí estaba el error, antes ponía attributes/methods
-                type: data.type, // Es útil guardar el tipo (rounded/squared)
+                compartments: data.compartments,
+                type: data.type,
                 position,
             })),
             edges: exportEdges,
@@ -175,21 +251,43 @@ export default function ClassDiagram() {
     const clearAll = () => {
         setNodes([]);
         setEdges([]);
-        setIdCounter(1);
     };
+
+    if (loading) {
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100vh",
+                }}
+            >
+                Cargando diagrama...
+            </div>
+        );
+    }
 
     return (
         <div style={{ width: "100%", height: "100vh", position: "relative" }}>
-            {/* Botón para añadir clases */}
-            <button className="save-button" onClick={saveFigure}>
-                💾 Guardar Diagrama
-            </button>
             <SideMenu addNode={addClassNode} />
 
-            {/* Botón para borrar todo */}
-            <button className="delete-button" onClick={clearAll}>
-                🗑 Borrar Todo
-            </button>
+            {error && (
+                <div
+                    style={{
+                        position: "absolute",
+                        zIndex: 10,
+                        top: 10,
+                        right: 10,
+                        padding: "8px",
+                        backgroundColor: "#ffebee",
+                        color: "#c62828",
+                        borderRadius: "4px",
+                    }}
+                >
+                    {error}
+                </div>
+            )}
 
             <ReactFlow
                 nodes={nodes}
@@ -201,7 +299,7 @@ export default function ClassDiagram() {
                 edgeTypes={edgeTypes}
                 connectionMode={ConnectionMode.Loose}
                 fitView
-                onPaneClick={() => setCloseEditingSignal(s => s + 1)} // Cierra edición al clicar en el fondo
+                onPaneClick={() => setCloseEditingSignal(s => s + 1)}
             >
                 <MiniMap />
                 <Controls />
