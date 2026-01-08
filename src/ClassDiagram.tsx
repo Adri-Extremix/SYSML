@@ -136,6 +136,9 @@ export default function ClassDiagram() {
                     id: edge.id,
                     source: edge.source,
                     target: edge.target,
+                    sourceHandle: edge.sourceHandle,
+                    targetHandle: edge.targetHandle,
+                    data: edge.data,
                 }));
 
                 setNodes(loadedNodes);
@@ -192,13 +195,13 @@ export default function ClassDiagram() {
                             nds.map(n =>
                                 n.id === newId
                                     ? {
-                                        ...n,
-                                        data: {
-                                            ...n.data,
-                                            ...newData,
-                                            onChange: n.data.onChange,
-                                        },
-                                    }
+                                          ...n,
+                                          data: {
+                                              ...n.data,
+                                              ...newData,
+                                              onChange: n.data.onChange,
+                                          },
+                                      }
                                     : n,
                             ),
                         );
@@ -271,7 +274,12 @@ export default function ClassDiagram() {
     return (
         <div style={{ width: "100%", height: "100vh", position: "relative" }}>
             <SideMenu addNode={addClassNode} />
-
+            <button className=" save-button" onClick={saveFigure}>
+                💾 Guardar Diagrama
+            </button>
+            <button className="delete-button" onClick={clearAll}>
+                🗑️ Limpiar Diagrama
+            </button>
             {error && (
                 <div
                     style={{

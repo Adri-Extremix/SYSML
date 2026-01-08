@@ -16,6 +16,13 @@ export interface EdgeData {
     id: string;
     source: string;
     target: string;
+    sourceHandle?: string;
+    targetHandle?: string;
+    data?: {
+        markerStart?: string;
+        markerEnd?: string;
+        label?: string;
+    };
 }
 
 // Obtener un diagrama del servidor
