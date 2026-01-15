@@ -16,9 +16,37 @@ import ClassNode from "./ClassNode";
 import ButtonEdge from "./ButtonEdge";
 import SideMenu from "./SideMenu";
 import { getDiagram, type DiagramData, type NodeData } from "./api";
+import dagre from "dagre";
 
 const nodeTypes = { classNode: ClassNode };
 const edgeTypes = { default: ButtonEdge };
+
+function applyDagreLayout(nodes: Node[], edges: Edge[]): Node[] {
+    const dagreGraph = new dagre.graphlib.Graph();
+    dagreGraph.setDefaultEdgeLabel(() => ({}));
+    dagreGraph.setGraph({ rankdir: "TB", nodesep: 100, ranksep: 150 });
+
+    nodes.forEach(node => {
+        dagreGraph.setNode(node.id, { width: 200, height: 150 });
+    });
+
+    edges.forEach(edge => {
+        dagreGraph.setEdge(edge.source, edge.target);
+    });
+
+    dagre.layout(dagreGraph);
+
+    return nodes.map(node => {
+        const nodeWithPosition = dagreGraph.node(node.id);
+        return {
+            ...node,
+            position: {
+                x: nodeWithPosition.x - 100,
+                y: nodeWithPosition.y - 75,
+            },
+        };
+    });
+}
 
 // Función para calcular posiciones automáticas si todas son (0,0)
 function calculateAutoPositions(
@@ -136,6 +164,9 @@ export default function ClassDiagram() {
                     id: edge.id,
                     source: edge.source,
                     target: edge.target,
+                    sourceHandle: edge.sourceHandle,
+                    targetHandle: edge.targetHandle,
+                    data: edge.data,
                 }));
 
                 setNodes(loadedNodes);
@@ -192,13 +223,13 @@ export default function ClassDiagram() {
                             nds.map(n =>
                                 n.id === newId
                                     ? {
-                                        ...n,
-                                        data: {
-                                            ...n.data,
-                                            ...newData,
-                                            onChange: n.data.onChange,
-                                        },
-                                    }
+                                          ...n,
+                                          data: {
+                                              ...n.data,
+                                              ...newData,
+                                              onChange: n.data.onChange,
+                                          },
+                                      }
                                     : n,
                             ),
                         );
@@ -253,6 +284,10 @@ export default function ClassDiagram() {
         setEdges([]);
     };
 
+    const autoLayout = useCallback(() => {
+        setNodes(nds => applyDagreLayout(nds, edges));
+    }, [edges, setNodes]);
+
     if (loading) {
         return (
             <div
@@ -271,7 +306,17 @@ export default function ClassDiagram() {
     return (
         <div style={{ width: "100%", height: "100vh", position: "relative" }}>
             <SideMenu addNode={addClassNode} />
-
+            <div className="button-container">
+                <button className="save-button" onClick={saveFigure}>
+                    💾 Guardar Diagrama
+                </button>
+                <button className="auto-layout-button" onClick={autoLayout}>
+                    📐 Auto Layout
+                </button>
+                <button className="delete-button" onClick={clearAll}>
+                    🗑️ Limpiar Diagrama
+                </button>
+            </div>
             {error && (
                 <div
                     style={{
@@ -299,6 +344,8 @@ export default function ClassDiagram() {
                 edgeTypes={edgeTypes}
                 connectionMode={ConnectionMode.Loose}
                 fitView
+          fitViewOptions={{
+            minZoom: 0.9, maxZoom: 0.9}}
                 onPaneClick={() => setCloseEditingSignal(s => s + 1)}
             >
                 <MiniMap />

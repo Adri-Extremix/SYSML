@@ -1,8 +1,14 @@
-.save-button {
+.button-container {
   position: absolute;
   z-index: 10;
   top: 2%;
-  left: 10%;
+  right: 1%;
+  display: flex;
+  gap: 12px;
+  align-items: left;
+}
+
+.save-button {
   min-height: 6vh;
   padding: 8px 12px;
   background-color: #f44336;
@@ -12,11 +18,17 @@
   cursor: pointer;
 }
 
+.auto-layout-button {
+  min-height: 6vh;
+  padding: 8px 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 .delete-button {
-  position: absolute;
-  z-index: 10;
-  top: 2%;
-  right: 2%;
   min-height: 6vh;
   padding: 8px 12px;
   background-color: #f44336;
