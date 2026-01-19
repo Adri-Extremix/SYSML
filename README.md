@@ -1,6 +1,9 @@
 # Editor de Diagramas SysMLv2
 Este proyecto es un editor de diagramas interactivo basado en la web para SysMLv2. Permite crear, visualizar y organizar nodos de clase con atributos y relaciones utilizando una interfaz intuitiva basada en nodos.
 
+> Este proyecto es software libre y de código abierto.
+> Se distribuye bajo los términos de la licencia **GNU AGPLv3**.
+
 ## 🚀 Características
 
 - **Editor Interactivo:** Arrastra y suelta nodos, crea conexiones y edita contenido en tiempo real.
