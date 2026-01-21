@@ -1,0 +1,237 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "label": "SmartHome",
+      "type": "squared",
+      "position": {
+        "x": 450,
+        "y": 50
+      }
+    },
+    {
+      "id": "2",
+      "label": "SecuritySystem",
+      "type": "squared",
+      "position": {
+        "x": 150,
+        "y": 200
+      }
+    },
+    {
+      "id": "3",
+      "label": "ClimateControl",
+      "type": "squared",
+      "position": {
+        "x": 450,
+        "y": 200
+      }
+    },
+    {
+      "id": "4",
+      "label": "LightingSystem",
+      "type": "squared",
+      "position": {
+        "x": 750,
+        "y": 200
+      }
+    },
+    {
+      "id": "5",
+      "label": "Camera",
+      "type": "squared",
+      "position": {
+        "x": -288.8888888888889,
+        "y": 370.00000000000006
+      }
+    },
+    {
+      "id": "6",
+      "label": "MotionSensor",
+      "type": "squared",
+      "position": {
+        "x": 37.77777777777774,
+        "y": 373.3333333333333
+      }
+    },
+    {
+      "id": "7",
+      "label": "Thermostat",
+      "type": "squared",
+      "position": {
+        "x": 317.77777777777777,
+        "y": 383.3333333333333
+      }
+    },
+    {
+      "id": "8",
+      "label": "HVAC",
+      "type": "squared",
+      "position": {
+        "x": 627.7777777777778,
+        "y": 384.4444444444444
+      }
+    },
+    {
+      "id": "9",
+      "label": "SmartBulb",
+      "type": "squared",
+      "position": {
+        "x": 886.6666666666667,
+        "y": 383.33333333333337
+      }
+    },
+    {
+      "id": "10",
+      "label": "DimmableLight",
+      "type": "squared",
+      "position": {
+        "x": 1191.111111111111,
+        "y": 383.33333333333337
+      }
+    },
+    {
+      "id": "11",
+      "label": "PowerSupply",
+      "type": "squared",
+      "position": {
+        "x": 450,
+        "y": 550
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-2",
+      "source": "1",
+      "target": "2",
+      "sourceHandle": "bottom-0",
+      "targetHandle": "top-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::PartDefined",
+        "label": "security"
+      }
+    },
+    {
+      "id": "e1-3",
+      "source": "1",
+      "target": "3",
+      "sourceHandle": "bottom-1",
+      "targetHandle": "top-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::PartDefined",
+        "label": "climate"
+      }
+    },
+    {
+      "id": "e1-4",
+      "source": "1",
+      "target": "4",
+      "sourceHandle": "bottom-2",
+      "targetHandle": "top-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::PartDefined",
+        "label": "lighting"
+      }
+    },
+    {
+      "id": "e2-5",
+      "source": "2",
+      "target": "5",
+      "sourceHandle": "bottom-0",
+      "targetHandle": "top-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::Composition",
+        "label": "cameras[2]"
+      }
+    },
+    {
+      "id": "e2-6",
+      "source": "2",
+      "target": "6",
+      "sourceHandle": "bottom-2",
+      "targetHandle": "top-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::Composition",
+        "label": "sensors[4]"
+      }
+    },
+    {
+      "id": "e3-7",
+      "source": "3",
+      "target": "7",
+      "sourceHandle": "bottom-0",
+      "targetHandle": "top-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::Composition",
+        "label": "thermostat"
+      }
+    },
+    {
+      "id": "e3-8",
+      "source": "3",
+      "target": "8",
+      "sourceHandle": "bottom-2",
+      "targetHandle": "top-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::Composition",
+        "label": "hvac"
+      }
+    },
+    {
+      "id": "e4-9",
+      "source": "4",
+      "target": "9",
+      "sourceHandle": "bottom-0",
+      "targetHandle": "top-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::Composition",
+        "label": "bulbs[8]"
+      }
+    },
+    {
+      "id": "e4-10",
+      "source": "4",
+      "target": "10",
+      "sourceHandle": "bottom-2",
+      "targetHandle": "top-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::Composition",
+        "label": "dimmers[3]"
+      }
+    },
+    {
+      "id": "e11-5",
+      "source": "11",
+      "target": "5",
+      "sourceHandle": "top-0",
+      "targetHandle": "bottom-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::Association",
+        "label": "powers"
+      }
+    },
+    {
+      "id": "e11-8",
+      "source": "11",
+      "target": "8",
+      "sourceHandle": "top-1",
+      "targetHandle": "bottom-1",
+      "data": {
+        "markerStart": "Arrow::None",
+        "markerEnd": "Arrow::Association",
+        "label": "powers"
+      }
+    }
+  ]
+}
